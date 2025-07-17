@@ -30,11 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure--(fgtx4!ac=p)41t0jhfkahcve
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['*'] if DEBUG else [host.strip() for host in os.getenv('ALLOWED_HOSTS', '').split(',') if host.strip()]
-
-# デバッグ用に一時的に追加
-if not DEBUG and not ALLOWED_HOSTS:
-    ALLOWED_HOSTS = ['portfoliocreate.onrender.com', '.onrender.com']
+ALLOWED_HOSTS = ['*'] if DEBUG else os.getenv('ALLOWED_HOSTS', '').split(',')
 
 
 # Application definition
@@ -101,37 +97,17 @@ DATABASE_URL = os.getenv('SUPABASE_DATABASE_URL')
 if DATABASE_URL:
     # Supabase PostgreSQL設定
     import dj_database_url
-    try:
-        db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-        
-        # IPv6問題を回避するための設定
-        db_config['OPTIONS'] = {
-            'sslmode': 'require',
-            'options': '-c default_transaction_isolation=serializable'
-        }
-        
-        DATABASES = {
-            'default': db_config
-        }
-    except:
-        # URLパースに失敗した場合は手動で設定
-        import urllib.parse
-        
-        # URLを手動でパース
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.postgresql',
-                'NAME': 'postgres',
-                'USER': 'postgres.tvocxlxchmzdwtmkvirh',
-                'PASSWORD': os.getenv('SUPABASE_DB_PASSWORD', ''),
-                'HOST': 'aws-0-ap-northeast-1.pooler.supabase.com',
-                'PORT': '5432',
-                'OPTIONS': {
-                    'sslmode': 'require',
-                    'options': '-c default_transaction_isolation=serializable'
-                }
-            }
-        }
+    db_config = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    
+    # IPv6問題を回避するための設定
+    db_config['OPTIONS'] = {
+        'sslmode': 'require',
+        'options': '-c default_transaction_isolation=serializable'
+    }
+    
+    DATABASES = {
+        'default': db_config
+    }
 else:
     # SQLiteフォールバック
     DATABASES = {
@@ -207,13 +183,6 @@ else:
     MEDIA_URL = '/media/'
     MEDIA_ROOT = BASE_DIR / 'media'
 
-# CSRF設定
-CSRF_TRUSTED_ORIGINS = []
-if not DEBUG:
-    allowed_hosts = os.getenv('ALLOWED_HOSTS', '')
-    if allowed_hosts:
-        CSRF_TRUSTED_ORIGINS = [f'https://{host.strip()}' for host in allowed_hosts.split(',') if host.strip()]
-
 # Django Allauth 設定
 SITE_ID = 1
 
@@ -229,24 +198,6 @@ ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_LOGOUT_ON_GET = True
-
-# Google OAuth設定
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': os.getenv('GOOGLE_OAUTH_CLIENT_ID'),
-            'secret': os.getenv('GOOGLE_OAUTH_CLIENT_SECRET'),
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
