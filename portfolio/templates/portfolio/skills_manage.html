@@ -1,0 +1,210 @@
+{% extends 'portfolio/base_simple.html' %}
+{% load portfolio_extras %}
+
+{% block title %}スキル管理 - Portfolio Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="{% url 'portfolio:dashboard' %}">
+            <i class="fas fa-home"></i> ダッシュボード
+        </a>
+        <i class="fas fa-chevron-right"></i>
+        <span>スキル管理</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="page-header">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="page-title">スキル管理</h1>
+                <p class="page-subtitle">技術スキルを追加・管理してください</p>
+            </div>
+            <div>
+                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    戻る
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Skill Form -->
+    <div class="card p-8 mb-8">
+        <h2 class="text-xl font-semibold text-gray-900 mb-6">
+            <i class="fas fa-plus mr-2"></i>スキルを追加・編集
+        </h2>
+        
+        <form method="post" action="{% url 'portfolio:skills_manage' %}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% csrf_token %}
+            <input type="hidden" name="edit_id" id="edit_id" value="">
+            
+            <div class="space-y-2">
+                <label for="{{ form.category.id_for_label }}" class="form-label">
+                    <i class="fas fa-layer-group mr-2"></i>カテゴリ
+                </label>
+                <select name="{{ form.category.name }}" id="{{ form.category.id_for_label }}" class="form-input">
+                    {% for choice in form.category.field.choices %}
+                    <option value="{{ choice.0 }}" {% if choice.0 == form.category.value %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.name.id_for_label }}" class="form-label">
+                    <i class="fas fa-code mr-2"></i>スキル名
+                </label>
+                <input type="text" name="{{ form.name.name }}" id="{{ form.name.id_for_label }}" 
+                       class="form-input" placeholder="Python, JavaScript..." 
+                       value="{{ form.name.value|default:'' }}">
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.experience_years.id_for_label }}" class="form-label">
+                    <i class="fas fa-clock mr-2"></i>経験年数
+                </label>
+                <input type="number" name="{{ form.experience_years.name }}" id="{{ form.experience_years.id_for_label }}" 
+                       class="form-input" placeholder="3" min="0" max="50"
+                       value="{{ form.experience_years.value|default:'' }}">
+            </div>
+            
+            <div class="space-y-2 flex items-end">
+                <button type="submit" class="btn-primary w-full">
+                    <i class="fas fa-plus mr-2"></i>スキルを追加
+                </button>
+            </div>
+            
+            <div class="md:col-span-2 lg:col-span-4 space-y-2">
+                <label for="{{ form.description.id_for_label }}" class="form-label">
+                    <i class="fas fa-align-left mr-2"></i>詳細説明
+                </label>
+                <textarea name="{{ form.description.name }}" id="{{ form.description.id_for_label }}" 
+                          class="form-input h-20 resize-none" placeholder="このスキルの詳細説明...">{{ form.description.value|default:'' }}</textarea>
+            </div>
+        </form>
+    </div>
+        
+    <!-- Skills List -->
+    <div class="space-y-6">
+            {% if skills %}
+                <!-- Skills by Category -->
+                {% regroup skills by category as skills_by_category %}
+                {% for category, category_skills in skills_by_category %}
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">
+                        <i class="fas fa-layer-group mr-2"></i>{{ category.get_name_display }}
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for skill in category_skills %}
+                        <div class="table-row group relative">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="font-semibold text-gray-700">{{ skill.name }}</h4>
+                                <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <button onclick="editSkill({{ skill.id }}, '{{ skill.name }}', '{{ skill.category }}', {{ skill.experience_years }}, '{{ skill.description|escapejs }}')" 
+                                            class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <a href="{% url 'portfolio:skill_delete' skill.id %}" 
+                                       class="btn-danger"
+                                       onclick="return confirm('このスキルを削除してもよろしいですか？');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">経験年数</span>
+                                    <span class="text-blue-500 font-semibold">{{ skill.experience_years }}年</span>
+                                </div>
+                                
+                                {% if skill.description %}
+                                <p class="text-gray-600 text-sm mt-2">{{ skill.description|truncatewords:10 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="card p-8 text-center">
+                    <div class="w-20 h-20 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">スキルがありません</h3>
+                    <p class="text-gray-600">左のフォームから最初のスキルを追加してください</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="flex justify-between items-center mt-8">
+        <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i>ダッシュボード
+        </a>
+        
+        <a href="{% url 'portfolio:experiences_manage' %}" class="btn-primary">
+            次へ: 経歴管理<i class="fas fa-arrow-right ml-2"></i>
+        </a>
+    </div>
+</div>
+
+<script>
+let editingSkillId = null;
+
+function editSkill(id, name, category, experienceYears, description) {
+    editingSkillId = id;
+    
+    // フォームに値を設定
+    document.querySelector('select[name="category"]').value = category;
+    document.querySelector('input[name="name"]').value = name;
+    document.querySelector('input[name="experience_years"]').value = experienceYears;
+    document.querySelector('textarea[name="description"]').value = description;
+    document.querySelector('input[name="edit_id"]').value = id;
+    
+    // ボタンのテキストを変更
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>スキルを更新';
+    submitBtn.classList.remove('btn-primary');
+    submitBtn.classList.add('btn-secondary');
+    
+    // キャンセルボタンを追加
+    if (!document.getElementById('cancel-edit-btn')) {
+        const cancelBtn = document.createElement('button');
+        cancelBtn.type = 'button';
+        cancelBtn.id = 'cancel-edit-btn';
+        cancelBtn.className = 'btn-secondary w-full ml-2';
+        cancelBtn.innerHTML = '<i class="fas fa-times mr-2"></i>キャンセル';
+        cancelBtn.onclick = cancelEdit;
+        submitBtn.parentNode.appendChild(cancelBtn);
+    }
+    
+    // スムーズスクロール
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEdit() {
+    editingSkillId = null;
+    
+    // フォームをリセット
+    document.querySelector('form').reset();
+    document.querySelector('input[name="edit_id"]').value = '';
+    
+    // ボタンを元に戻す
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>スキルを追加';
+    submitBtn.classList.remove('btn-secondary');
+    submitBtn.classList.add('btn-primary');
+    
+    // キャンセルボタンを削除
+    const cancelBtn = document.getElementById('cancel-edit-btn');
+    if (cancelBtn) {
+        cancelBtn.remove();
+    }
+}
+</script>
+{% endblock %}

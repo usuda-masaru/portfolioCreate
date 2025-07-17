@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio Manager{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 3D Background Elements */
+        .bg-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .shape-3d {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.03);
+            border-radius: 50%;
+            animation: float3d 20s ease-in-out infinite;
+        }
+        
+        .shape-3d:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-3d:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+        
+        .shape-3d:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: 10%;
+            left: 5%;
+            animation-delay: -10s;
+        }
+        
+        .shape-3d:nth-child(4) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -15s;
+        }
+        
+        @keyframes float3d {
+            0%, 100% { 
+                transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); 
+                opacity: 0.5;
+            }
+            25% { 
+                transform: translate3d(30px, -30px, 20px) rotateX(90deg) rotateY(90deg); 
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate3d(-20px, -60px, -10px) rotateX(180deg) rotateY(180deg); 
+                opacity: 0.3;
+            }
+            75% { 
+                transform: translate3d(-40px, -20px, 30px) rotateX(270deg) rotateY(270deg); 
+                opacity: 0.6;
+            }
+        }
+        
+        /* Simple Card Styles */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        
+        /* Header */
+        .page-header {
+            padding: 2rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6b7280;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: #f9fafb;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            color: #374151;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+        
+        /* Form Styles */
+        .form-input {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Table Styles */
+        .table-row {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .table-row:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .main-content {
+            padding-top: 5rem;
+            min-height: 100vh;
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .breadcrumb a {
+            color: #6366f1;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 3D Background -->
+    <div class="bg-3d">
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="container">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'portfolio:dashboard' %}" class="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors">Portfolio Manager</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'portfolio:dashboard' %}" class="text-gray-600 hover:text-gray-900 text-sm">
+                        <i class="fas fa-tachometer-alt mr-1"></i>ダッシュボード
+                    </a>
+                    {% if user.is_authenticated %}
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-indigo-600 text-sm"></i>
+                            </div>
+                            <span class="text-sm text-gray-700">{{ user.username }}</span>
+                        </div>
+                        <a href="{% url 'portfolio:logout' %}" class="text-gray-600 hover:text-gray-900 text-sm">
+                            <i class="fas fa-sign-out-alt mr-1"></i>ログアウト
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6 space-y-4">
+                    {% for message in messages %}
+                        <div class="card p-4 border-l-4 {% if message.tags == 'success' %}border-green-500 bg-green-50{% elif message.tags == 'error' %}border-red-500 bg-red-50{% elif message.tags == 'warning' %}border-yellow-500 bg-yellow-50{% else %}border-blue-500 bg-blue-50{% endif %}">
+                            <div class="flex items-center">
+                                <i class="fas {% if message.tags == 'success' %}fa-check-circle text-green-600{% elif message.tags == 'error' %}fa-exclamation-circle text-red-600{% elif message.tags == 'warning' %}fa-exclamation-triangle text-yellow-600{% else %}fa-info-circle text-blue-600{% endif %} mr-3"></i>
+                                <span class="text-gray-700">{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 py-6 mt-12" style="background: rgba(255, 255, 255, 0.95);">
+        <div class="container">
+            <div class="flex items-center justify-between text-sm text-gray-500">
+                <div>
+                    <i class="fas fa-code mr-2"></i>Portfolio Management System
+                </div>
+                <div>
+                    Powered by Django & TailwindCSS
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

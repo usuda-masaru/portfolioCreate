@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title %}Portfolio Manager{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            filter: blur(40px);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .geometric-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="text-gray-800 flex items-center justify-center min-h-screen">
+    <!-- Geometric Pattern Background -->
+    <div class="geometric-pattern">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#3b82f6" stroke-width="0.5"/>
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+        </svg>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-element w-64 h-64 top-10 left-10" style="animation-delay: 0s;"></div>
+    <div class="floating-element w-96 h-96 top-40 right-20" style="animation-delay: -2s;"></div>
+    <div class="floating-element w-80 h-80 bottom-20 left-1/4" style="animation-delay: -4s;"></div>
+    
+    {% block body %}{% endblock %}
+    
+    {% block extra_body %}{% endblock %}
+</body>
+</html>

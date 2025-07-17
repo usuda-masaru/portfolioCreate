@@ -1,0 +1,521 @@
+[
+{
+  "model": "portfolio.profile",
+  "pk": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+  "fields": {
+    "user": 1,
+    "name": "サンプル エンジニア",
+    "title": "フルスタックエンジニア",
+    "bio": "10年以上のWeb開発経験を持つフルスタックエンジニアです。フロントエンドからバックエンド、インフラまで幅広く対応可能です。",
+    "email": "sample@example.com",
+    "location": "東京都",
+    "website": "https://example.com",
+    "twitter": "https://twitter.com/sample",
+    "qiita": "",
+    "avatar": "",
+    "created_at": "2025-07-15T06:54:41.231Z",
+    "updated_at": "2025-07-15T06:54:41.231Z"
+  }
+},
+{
+  "model": "portfolio.profile",
+  "pk": "81e6f294-e419-4938-8943-f72860d4dec4",
+  "fields": {
+    "user": 2,
+    "name": "臼田勝",
+    "title": "as",
+    "bio": "開発経験としては、詳細設計から総合テストまで一通りは経験しております。小さな案件では要件から実現方法を検討し実装も行いました。\r\nプログラミング技術としては広く触ってきたこともあり、新しい技術に抵抗はなく積極的に学びます。\r\nAIツールに関して毎日使用して、作業の自動化、UMLの作成方法など検討しているため積極的に導入できます。\r\nスケジュール管理は自己タスクを3時間以内で分割していたので、報告含め主体的に実施できます。",
+    "email": "m.usuda0603@gmail.com",
+    "location": "東京都",
+    "website": "http://localhost:8000/portfolio/profile/edit/",
+    "twitter": "http://localhost:8000/portfolio/profile/edit/",
+    "qiita": "http://localhost:8000/portfolio/profile/edit/",
+    "avatar": "avatars/133877214582744904.jpg",
+    "created_at": "2025-07-15T07:19:44.087Z",
+    "updated_at": "2025-07-16T08:32:35.919Z"
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 1,
+  "fields": {
+    "name": "frontend",
+    "display_order": 1
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 2,
+  "fields": {
+    "name": "backend",
+    "display_order": 2
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 3,
+  "fields": {
+    "name": "infrastructure",
+    "display_order": 3
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 4,
+  "fields": {
+    "name": "database",
+    "display_order": 4
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 5,
+  "fields": {
+    "name": "framework",
+    "display_order": 5
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 6,
+  "fields": {
+    "name": "cloud",
+    "display_order": 6
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 7,
+  "fields": {
+    "name": "tools",
+    "display_order": 7
+  }
+},
+{
+  "model": "portfolio.skillcategory",
+  "pk": 8,
+  "fields": {
+    "name": "other",
+    "display_order": 8
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 1,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 1,
+    "name": "JavaScript",
+    "experience_years": 5,
+    "proficiency": 4,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 2,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 1,
+    "name": "TypeScript",
+    "experience_years": 3,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 3,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 5,
+    "name": "React",
+    "experience_years": 4,
+    "proficiency": 4,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 4,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 5,
+    "name": "Vue.js",
+    "experience_years": 2,
+    "proficiency": 2,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 5,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 2,
+    "name": "Python",
+    "experience_years": 6,
+    "proficiency": 4,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 6,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 5,
+    "name": "Django",
+    "experience_years": 4,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 7,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 5,
+    "name": "FastAPI",
+    "experience_years": 2,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 8,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 4,
+    "name": "PostgreSQL",
+    "experience_years": 5,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 9,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 4,
+    "name": "MySQL",
+    "experience_years": 3,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 10,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 3,
+    "name": "Docker",
+    "experience_years": 3,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 11,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 6,
+    "name": "AWS",
+    "experience_years": 4,
+    "proficiency": 3,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 12,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "category": 7,
+    "name": "Git",
+    "experience_years": 8,
+    "proficiency": 4,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 13,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "category": 1,
+    "name": "Python",
+    "experience_years": 3,
+    "proficiency": 1,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 15,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "category": 4,
+    "name": "Oracle",
+    "experience_years": 2,
+    "proficiency": 2,
+    "description": "まぁまぁ"
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 16,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "category": 2,
+    "name": "Java",
+    "experience_years": 1,
+    "proficiency": 2,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.skill",
+  "pk": 17,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "category": 3,
+    "name": "AWS",
+    "experience_years": 2,
+    "proficiency": 1,
+    "description": ""
+  }
+},
+{
+  "model": "portfolio.experience",
+  "pk": 1,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "title": "ECサイト開発プロジェクト",
+    "company": "テックカンパニー株式会社",
+    "start_date": "2022-04-01",
+    "end_date": "2024-03-31",
+    "is_current": false,
+    "description": "大規模ECサイトの開発・運用プロジェクトに参加。React+TypeScript、Django REST Framework、PostgreSQLを使用。",
+    "role": "テックリード",
+    "team_size": 8,
+    "technologies": "React, TypeScript, Django, PostgreSQL, Docker, AWS",
+    "processes": "要件定義, 設計, 開発, テスト, デプロイ",
+    "achievements": "サイト速度30%向上、売上20%増加に貢献"
+  }
+},
+{
+  "model": "portfolio.experience",
+  "pk": 2,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "title": "社内システム開発",
+    "company": "イノベーション株式会社",
+    "start_date": "2020-01-01",
+    "end_date": "2022-03-31",
+    "is_current": false,
+    "description": "社内業務効率化のためのWebアプリケーション開発。Vue.js、FastAPI、MySQLを使用。",
+    "role": "フルスタックエンジニア",
+    "team_size": 4,
+    "technologies": "Vue.js, FastAPI, MySQL, Docker",
+    "processes": "要件定義, 設計, 開発, テスト",
+    "achievements": "業務効率50%向上、残業時間削減"
+  }
+},
+{
+  "model": "portfolio.experience",
+  "pk": 3,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "title": "医療",
+    "company": "aa",
+    "start_date": "2025-07-08",
+    "end_date": "2025-07-16",
+    "is_current": true,
+    "description": "ああ",
+    "role": "ああ",
+    "team_size": 4,
+    "technologies": "aa",
+    "processes": "aa",
+    "achievements": "aa"
+  }
+},
+{
+  "model": "portfolio.experience",
+  "pk": 4,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "title": "医療関係システムのリプレイス",
+    "company": "医療関係システムのリプレイス",
+    "start_date": "2025-01-01",
+    "end_date": null,
+    "is_current": true,
+    "description": "医療関係システムのリプレイス",
+    "role": "PL",
+    "team_size": 5,
+    "technologies": "Python,Django",
+    "processes": "基本設計,",
+    "achievements": "≪担当業務≫\r\n・基本設計\r\n　API設計、方式設計\r\n・詳細設計\r\n　SwaggerUIの作成、クラス図作成、プログラム設計\r\n・開発\r\n　バックエンド（API実装）\r\n（COBOLからPythonへリプレイス）\r\n・テスト\r\n　カバレッジテスト、Pytest\r\n・管理\r\n　採用面談、スケジュール管理、ソースレビュー\r\n\r\n≪成果・改善≫\r\n・参画三か月で開発リーダー⇒PL（テックリード、進捗管理、ソースレビュー、）\r\n・AIツールの実用的な使い方をメンバーに教授\r\n・ドキュメント類作成の自動化\r\n　クラス図、詳細設計、Swagger定義、DDLなど\r\n・共通機能をリファクタリング\r\n・実装ルールを明確化\r\n　クラス構成、ログ、Git運用、DB関連"
+  }
+},
+{
+  "model": "portfolio.project",
+  "pk": 1,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "title": "タスク管理アプリ",
+    "project_type": "web",
+    "description": "チーム向けのタスク管理Webアプリケーション。リアルタイム通知機能付き。",
+    "image": "",
+    "url": "https://example.com/taskapp",
+    "github_url": "https://github.com/sample/taskapp",
+    "technologies": "React, TypeScript, Django, PostgreSQL, WebSocket",
+    "created_date": "2023-06-01",
+    "display_order": 1,
+    "is_featured": true
+  }
+},
+{
+  "model": "portfolio.project",
+  "pk": 2,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "title": "ポートフォリオサイト",
+    "project_type": "landing",
+    "description": "個人ポートフォリオサイト。レスポンシブデザイン対応。",
+    "image": "",
+    "url": "https://example.com/portfolio",
+    "github_url": "https://github.com/sample/portfolio",
+    "technologies": "Next.js, TailwindCSS, TypeScript",
+    "created_date": "2023-03-01",
+    "display_order": 2,
+    "is_featured": false
+  }
+},
+{
+  "model": "portfolio.project",
+  "pk": 3,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "title": "LP練習用",
+    "project_type": "web",
+    "description": "あさあ",
+    "image": "projects/133848799032943687.jpg",
+    "url": "https://github.com/usuda-masaru/PortfolioCreateFront",
+    "github_url": "https://github.com/usuda-masaru/PortfolioCreateFront",
+    "technologies": "Python",
+    "created_date": "2025-07-16",
+    "display_order": 0,
+    "is_featured": true
+  }
+},
+{
+  "model": "portfolio.project",
+  "pk": 4,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "title": "ポートフォリオ作成アプリ",
+    "project_type": "web",
+    "description": "ポートフォリオ作成アプリ",
+    "image": "projects/133859223469110406.jpg",
+    "url": "http://localhost:8000/portfolio/projects/",
+    "github_url": "http://localhost:8000/portfolio/projects/",
+    "technologies": "Python,Django",
+    "created_date": "2025-07-24",
+    "display_order": 0,
+    "is_featured": false
+  }
+},
+{
+  "model": "portfolio.project",
+  "pk": 5,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "title": "LP",
+    "project_type": "mobile",
+    "description": "タイマーアプリ",
+    "image": "projects/133869356448481976.jpg",
+    "url": "http://localhost:8000/portfolio/projects/",
+    "github_url": "http://localhost:8000/portfolio/projects/",
+    "technologies": "http://localhost:8000/portfolio/projects/",
+    "created_date": "2025-06-30",
+    "display_order": 0,
+    "is_featured": false
+  }
+},
+{
+  "model": "portfolio.githubprofile",
+  "pk": 1,
+  "fields": {
+    "profile": "2711e2dd-26db-41fb-9661-ee4901aedf77",
+    "username": "sampleuser",
+    "repositories_count": 1,
+    "followers_count": 0,
+    "following_count": 0,
+    "gists_count": 0,
+    "created_at": "2011-10-26T08:08:17Z",
+    "github_bio": "",
+    "github_location": "",
+    "github_blog": "",
+    "language_stats": {
+      "JavaScript": {
+        "bytes": 171,
+        "percentage": 100.0
+      }
+    },
+    "last_updated": "2025-07-15T16:11:45.683Z"
+  }
+},
+{
+  "model": "portfolio.githubprofile",
+  "pk": 2,
+  "fields": {
+    "profile": "81e6f294-e419-4938-8943-f72860d4dec4",
+    "username": "usuda-masaru",
+    "repositories_count": 7,
+    "followers_count": 0,
+    "following_count": 0,
+    "gists_count": 0,
+    "created_at": "2024-08-28T08:05:32Z",
+    "github_bio": "",
+    "github_location": "",
+    "github_blog": "",
+    "language_stats": {
+      "TypeScript": {
+        "bytes": 458127,
+        "percentage": 56.99
+      },
+      "Python": {
+        "bytes": 131097,
+        "percentage": 16.31
+      },
+      "JavaScript": {
+        "bytes": 108100,
+        "percentage": 13.45
+      },
+      "CSS": {
+        "bytes": 94234,
+        "percentage": 11.72
+      },
+      "HTML": {
+        "bytes": 11942,
+        "percentage": 1.49
+      },
+      "Shell": {
+        "bytes": 278,
+        "percentage": 0.03
+      },
+      "Procfile": {
+        "bytes": 94,
+        "percentage": 0.01
+      }
+    },
+    "last_updated": "2025-07-16T07:15:11.410Z"
+  }
+}
+]

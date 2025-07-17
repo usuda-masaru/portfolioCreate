@@ -1,0 +1,1428 @@
+{% load portfolio_extras %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.name }} - ポートフォリオ</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script>
+        // TailwindCSS設定（プロフェッショナル仕様）
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'display': ['SF Pro Display', 'Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    },
+                    colors: {
+                        'primary': {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e'
+                        },
+                        'neutral': {
+                            50: '#fafafa',
+                            100: '#f5f5f5',
+                            200: '#e5e5e5',
+                            300: '#d4d4d4',
+                            400: '#a3a3a3',
+                            500: '#737373',
+                            600: '#525252',
+                            700: '#404040',
+                            800: '#262626',
+                            900: '#171717'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@alpinejs/intersect@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            --secondary-gradient: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+            --accent-gradient: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            --neutral-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(226, 232, 240, 0.3);
+            --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-elevation: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+        }
+        
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 116, 139, 0.3) transparent;
+        }
+        
+        *::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        *::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.8);
+            border-radius: 10px;
+        }
+        
+        *::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.3);
+            border-radius: 10px;
+        }
+        
+        *::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.5);
+        }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            font-feature-settings: 'rlig' 1, 'calt' 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: var(--text-primary);
+        }
+        
+        /* 限界を超えた背景システム */
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        /* 複雑なメッシュレイヤー */
+        .bg-mesh {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(147, 51, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 90% 70%, rgba(245, 101, 101, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 10% 90%, rgba(251, 191, 36, 0.06) 0%, transparent 50%);
+            animation: mesh-dance 25s ease-in-out infinite;
+        }
+        
+        @keyframes mesh-dance {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            20% { transform: translate(40px, -20px) rotate(2deg) scale(1.1); }
+            40% { transform: translate(-30px, 30px) rotate(-1deg) scale(0.9); }
+            60% { transform: translate(20px, -40px) rotate(3deg) scale(1.2); }
+            80% { transform: translate(-40px, 10px) rotate(-2deg) scale(0.8); }
+        }
+        
+        /* 雲のような柔らかいエフェクト */
+        .bg-clouds {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(ellipse at 30% 20%, rgba(241, 245, 249, 0.4) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(248, 250, 252, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 30%, rgba(241, 245, 249, 0.2) 0%, transparent 40%),
+                radial-gradient(ellipse at 20% 80%, rgba(248, 250, 252, 0.25) 0%, transparent 45%);
+            animation: clouds-drift 60s ease-in-out infinite;
+        }
+        
+        @keyframes clouds-drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -20px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+        
+        /* 複数のオーブレイヤー */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            animation: orb-complex 20s ease-in-out infinite;
+        }
+        
+        /* プロジェクトタイプ別のカラー */
+        .project-card[data-type="web"] .project-type-badge {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border-color: rgba(30, 64, 175, 0.2);
+        }
+        
+        .project-card[data-type="mobile"] .project-type-badge {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: #166534;
+            border-color: rgba(22, 101, 52, 0.2);
+        }
+        
+        .project-card[data-type="desktop"] .project-type-badge {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border-color: rgba(146, 64, 14, 0.2);
+        }
+        
+        .project-card[data-type="api"] .project-type-badge {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            color: #6b21a8;
+            border-color: rgba(107, 33, 168, 0.2);
+        }
+        
+        .project-card[data-type="landing"] .project-type-badge {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #c53030;
+            border-color: rgba(197, 48, 48, 0.2);
+        }
+        
+        .project-card[data-type="other"] .project-type-badge {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            color: #2d3748;
+            border-color: rgba(45, 55, 72, 0.2);
+        }
+        
+        .bg-orb:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: 5%;
+            left: 5%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(241, 245, 249, 0.08) 50%, transparent 70%);
+            animation-delay: 0s;
+        }
+        
+        .bg-orb:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            right: 5%;
+            background: radial-gradient(circle, rgba(248, 250, 252, 0.12) 0%, rgba(255, 255, 255, 0.06) 50%, transparent 70%);
+            animation-delay: -7s;
+        }
+        
+        .bg-orb:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 50%;
+            background: radial-gradient(circle, rgba(245, 101, 101, 0.1) 0%, rgba(251, 191, 36, 0.05) 50%, transparent 70%);
+            animation-delay: -14s;
+        }
+        
+        .bg-orb:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            top: 30%;
+            left: 70%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.12) 0%, rgba(245, 101, 101, 0.06) 50%, transparent 70%);
+            animation-delay: -3s;
+        }
+        
+        .bg-orb:nth-child(5) {
+            width: 350px;
+            height: 350px;
+            bottom: 40%;
+            right: 30%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.08) 0%, rgba(16, 185, 129, 0.04) 50%, transparent 70%);
+            animation-delay: -10s;
+        }
+        
+        @keyframes orb-complex {
+            0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            20% { transform: translate(60px, -40px) scale(1.3) rotate(72deg); }
+            40% { transform: translate(-80px, 60px) scale(0.7) rotate(144deg); }
+            60% { transform: translate(40px, -80px) scale(1.5) rotate(216deg); }
+            80% { transform: translate(-60px, 40px) scale(0.9) rotate(288deg); }
+        }
+        
+        /* 浮遊パーティクル */
+        .bg-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .floating-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            animation: particle-float 12s ease-in-out infinite;
+        }
+        
+        .floating-particle:nth-child(1) {
+            top: 20%;
+            left: 10%;
+            background: rgba(255, 255, 255, 0.5);
+            animation-delay: 0s;
+        }
+        
+        .floating-particle:nth-child(2) {
+            top: 60%;
+            left: 80%;
+            background: rgba(147, 51, 234, 0.6);
+            animation-delay: -2s;
+        }
+        
+        .floating-particle:nth-child(3) {
+            top: 80%;
+            left: 30%;
+            background: rgba(16, 185, 129, 0.5);
+            animation-delay: -4s;
+        }
+        
+        .floating-particle:nth-child(4) {
+            top: 40%;
+            left: 60%;
+            background: rgba(245, 101, 101, 0.4);
+            animation-delay: -6s;
+        }
+        
+        .floating-particle:nth-child(5) {
+            top: 15%;
+            left: 70%;
+            background: rgba(251, 191, 36, 0.5);
+            animation-delay: -8s;
+        }
+        
+        @keyframes particle-float {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+            25% { transform: translate(100px, -150px) scale(1.5); opacity: 0.8; }
+            50% { transform: translate(-120px, 200px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(80px, -100px) scale(1.2); opacity: 0.9; }
+        }
+        
+        /* 光のオーブ */
+        .bg-light-orb {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            animation: orb-glow 30s ease-in-out infinite;
+        }
+        
+        .bg-light-orb:nth-child(1) {
+            top: 15%;
+            left: 8%;
+            animation-delay: 0s;
+        }
+        
+        .bg-light-orb:nth-child(2) {
+            top: 45%;
+            left: 85%;
+            animation-delay: -10s;
+        }
+        
+        .bg-light-orb:nth-child(3) {
+            top: 75%;
+            left: 15%;
+            animation-delay: -20s;
+        }
+        
+        @keyframes orb-glow {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.5); opacity: 0.6; }
+        }
+        
+        /* 柔らかい波紋 */
+        .bg-ripple {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, transparent 40%, rgba(255, 255, 255, 0.05) 45%, transparent 50%);
+            animation: ripple-expand 20s ease-in-out infinite;
+        }
+        
+        .bg-ripple:nth-child(1) {
+            top: 25%;
+            left: 20%;
+            animation-delay: 0s;
+        }
+        
+        .bg-ripple:nth-child(2) {
+            top: 55%;
+            left: 70%;
+            animation-delay: -7s;
+        }
+        
+        .bg-ripple:nth-child(3) {
+            top: 10%;
+            left: 80%;
+            animation-delay: -14s;
+        }
+        
+        @keyframes ripple-expand {
+            0%, 100% { transform: scale(0.8); opacity: 0.2; }
+            50% { transform: scale(2); opacity: 0.05; }
+        }
+        
+        /* プロジェクトカード専用スタイル */
+        .project-card {
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            height: fit-content;
+            min-height: 450px;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: rgba(100, 116, 139, 0.3);
+        }
+        
+        .project-type-badge {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .project-card .btn-secondary {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .project-card .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* レスポンシブ調整 */
+        @media (max-width: 768px) {
+            .project-card {
+                min-height: 400px;
+                max-height: 500px;
+            }
+        }
+        
+        /* テキストの行数制限 */
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* 次世代グラスモーフィズム */
+        .glass-morphism {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.9) 0%, 
+                rgba(255, 255, 255, 0.7) 50%, 
+                rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 28px;
+            border: 2px solid;
+            border-image: linear-gradient(135deg, 
+                rgba(100, 116, 139, 0.2) 0%, 
+                rgba(147, 51, 234, 0.2) 50%, 
+                rgba(16, 185, 129, 0.3) 100%) 1;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(100, 116, 139, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-morphism::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                transparent 50%, 
+                rgba(100, 116, 139, 0.1) 100%);
+            border-radius: 28px;
+            pointer-events: none;
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(100, 116, 139, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 50%, 
+                rgba(100, 116, 139, 0.03) 100%);
+            border-radius: 24px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .glass-card:hover::before {
+            opacity: 1;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15),
+                0 5px 15px rgba(100, 116, 139, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        /* プロフェッショナルタイポグラフィ */
+        .heading-primary {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .heading-secondary {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+        }
+        
+        .text-body {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+        
+        /* モダンボタンスタイル */
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            font-weight: 600;
+            padding: 16px 32px;
+            border-radius: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(100, 116, 139, 0.2);
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* スキルカードスタイル */
+        .skill-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(100, 116, 139, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                rgba(100, 116, 139, 0.6) 0%,
+                rgba(147, 51, 234, 0.7) 50%,
+                rgba(16, 185, 129, 0.8) 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+            border-radius: 24px 24px 0 0;
+        }
+        
+        .skill-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(100, 116, 139, 0.03) 0%,
+                transparent 50%,
+                rgba(147, 51, 234, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 24px;
+        }
+        
+        .skill-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .skill-card:hover::after {
+            opacity: 1;
+        }
+        
+        .skill-card:hover {
+            transform: translateY(-12px) scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15),
+                0 5px 15px rgba(100, 116, 139, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        /* スキルプログレスバー */
+        .skill-progress {
+            background: linear-gradient(135deg, 
+                rgba(226, 232, 240, 0.4) 0%, 
+                rgba(226, 232, 240, 0.6) 50%, 
+                rgba(226, 232, 240, 0.4) 100%);
+            border-radius: 12px;
+            height: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .skill-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(100, 116, 139, 0.7) 0%,
+                rgba(147, 51, 234, 0.8) 50%,
+                rgba(16, 185, 129, 0.9) 100%);
+            border-radius: 12px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 2px 8px rgba(100, 116, 139, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .skill-progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.3) 100%);
+            border-radius: 12px;
+        }
+        
+        .skill-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.8), 
+                transparent);
+            animation: progress-shine 3s infinite;
+            border-radius: 12px;
+        }
+        
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(200%); }
+        }
+        
+        /* 統計カード */
+        .stats-card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 28px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(100, 116, 139, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(100, 116, 139, 0.1) 0%,
+                rgba(147, 51, 234, 0.05) 50%,
+                rgba(16, 185, 129, 0.08) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .stats-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stats-card:hover::after {
+            left: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 5px 15px rgba(100, 116, 139, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .stats-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* 言語統計バー */
+        .language-bar {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.95) 0%, 
+                rgba(255, 255, 255, 0.85) 50%, 
+                rgba(255, 255, 255, 0.9) 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05),
+                0 1px 4px rgba(59, 130, 246, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .language-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(100, 116, 139, 0.03) 0%,
+                transparent 50%,
+                rgba(147, 51, 234, 0.03) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 16px;
+        }
+        
+        .language-bar:hover::before {
+            opacity: 1;
+        }
+        
+        .language-bar:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 1) 0%, 
+                rgba(255, 255, 255, 0.95) 50%, 
+                rgba(255, 255, 255, 0.98) 100%);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(100, 116, 139, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+        
+        .language-progress {
+            background: linear-gradient(135deg, 
+                rgba(226, 232, 240, 0.4) 0%, 
+                rgba(226, 232, 240, 0.6) 50%, 
+                rgba(226, 232, 240, 0.4) 100%);
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .language-progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .language-progress-fill::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0.2) 0%,
+                rgba(255, 255, 255, 0.4) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+            border-radius: 10px;
+        }
+        
+        .language-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.6), 
+                transparent);
+            animation: progress-shine 2.5s infinite;
+            border-radius: 10px;
+        }
+        
+        /* レスポンシブメディアクエリ */
+        @media (max-width: 768px) {
+            .glass-card {
+                margin: 16px;
+                padding: 20px;
+            }
+            
+            .heading-primary {
+                font-size: 2rem;
+            }
+            
+            .heading-secondary {
+                font-size: 1.5rem;
+            }
+            
+            .stats-card {
+                padding: 16px;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+        }
+        
+        /* アニメーション最適化 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- 限界を超えた背景システム -->
+    <div class="dynamic-bg">
+        <div class="bg-mesh"></div>
+        <div class="bg-clouds"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-orb"></div>
+        <div class="bg-particles">
+            <div class="floating-particle"></div>
+            <div class="floating-particle"></div>
+            <div class="floating-particle"></div>
+            <div class="floating-particle"></div>
+            <div class="floating-particle"></div>
+        </div>
+        <div class="bg-light-orb"></div>
+        <div class="bg-light-orb"></div>
+        <div class="bg-light-orb"></div>
+        <div class="bg-ripple"></div>
+        <div class="bg-ripple"></div>
+        <div class="bg-ripple"></div>
+    </div>
+    
+    <!-- Header -->
+    <header class="relative min-h-screen flex items-center justify-center overflow-hidden"
+            x-data="{ loaded: false }" 
+            x-init="setTimeout(() => loaded = true, 300)">
+        <div class="container mx-auto px-6 py-20 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                <!-- Profile Image Section -->
+                <div class="lg:w-1/2 flex flex-col items-center"
+                     x-show="loaded" 
+                     x-transition:enter="transition ease-out duration-700"
+                     x-transition:enter-start="opacity-0 transform translate-y-10"
+                     x-transition:enter-end="opacity-100 transform translate-y-0">
+                    <div class="relative mb-8">
+                        <!-- Main Profile Image -->
+                        <div class="w-80 h-80 mx-auto relative glass-morphism p-4">
+                            {% if profile.avatar %}
+                                <img src="{{ profile.avatar.url }}" 
+                                     alt="{{ profile.name }}" 
+                                     class="w-full h-full rounded-full object-cover shadow-2xl">
+                            {% else %}
+                                <div class="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-2xl">
+                                    <i class="fas fa-user text-6xl text-white"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Status Badge -->
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center glass-morphism shadow-2xl">
+                            <i class="fas fa-code text-white text-3xl animate-pulse"></i>
+                            <div class="absolute inset-0 rounded-full border-4 border-white opacity-30 animate-ping"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-cogs text-white text-2xl"></i>
+                            </div>
+                            <div class="stats-number">{{ skills_count|default:0 }}</div>
+                            <div class="stats-label">スキル</div>
+                        </div>
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-briefcase text-white text-2xl"></i>
+                            </div>
+                            <div class="stats-number">{{ experiences_count|default:0 }}</div>
+                            <div class="stats-label">経験</div>
+                        </div>
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-rocket text-white text-2xl"></i>
+                            </div>
+                            <div class="stats-number">{{ projects_count|default:0 }}</div>
+                            <div class="stats-label">プロジェクト</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Info Section -->
+                <div class="lg:w-1/2 text-center lg:text-left"
+                     x-show="loaded" 
+                     x-transition:enter="transition ease-out duration-700"
+                     x-transition:enter-start="opacity-0 transform translate-y-10"
+                     x-transition:enter-end="opacity-100 transform translate-y-0">
+                    <h1 class="heading-primary mb-4">{{ profile.name }}</h1>
+                    <h2 class="heading-secondary mb-6">{{ profile.title }}</h2>
+                    <p class="text-body text-xl mb-8 max-w-2xl">{{ profile.bio }}</p>
+                    
+                    <!-- Contact Info -->
+                    <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                        <div class="glass-card p-4 flex items-center gap-3">
+                            <i class="fas fa-envelope text-blue-600"></i>
+                            <span class="text-gray-700">{{ profile.email }}</span>
+                        </div>
+                        {% if profile.location %}
+                        <div class="glass-card p-4 flex items-center gap-3">
+                            <i class="fas fa-map-marker-alt text-green-600"></i>
+                            <span class="text-gray-700">{{ profile.location }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+                        {% if profile.website %}
+                            <a href="{{ profile.website }}" target="_blank" class="btn-secondary">
+                                <i class="fas fa-globe"></i>
+                                <span>ウェブサイト</span>
+                            </a>
+                        {% endif %}
+                        {% if profile.twitter %}
+                            <a href="{{ profile.twitter }}" target="_blank" class="btn-secondary">
+                                <i class="fab fa-twitter"></i>
+                                <span>Twitter</span>
+                            </a>
+                        {% endif %}
+                        {% if profile.qiita %}
+                            <a href="{{ profile.qiita }}" target="_blank" class="btn-secondary">
+                                <i class="fas fa-code"></i>
+                                <span>Qiita</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Skills Section -->
+    {% if skills_by_category %}
+    <section class="py-20 relative" x-data="{ inView: false }" x-intersect="inView = true">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="heading-secondary mb-4">スキルセット</h2>
+                <p class="text-body text-lg max-w-2xl mx-auto">技術スタックと習熟度をご紹介します</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                {% for category, skills in skills_by_category.items %}
+                <div class="skill-card p-8"
+                     x-show="inView" 
+                     x-transition:enter="transition ease-out duration-700"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100">
+                    <!-- Category Header -->
+                    <div class="flex items-center mb-6">
+                        <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-{{ category.name|category_icon }} text-white text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold" style="color: var(--text-primary);">{{ category.get_name_display }}</h3>
+                    </div>
+                    
+                    <!-- Skills List -->
+                    <div class="space-y-4">
+                        {% for skill in skills %}
+                        <div class="skill-item">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="font-medium" style="color: var(--text-primary);">{{ skill.name }}</span>
+                                <span class="text-sm" style="color: var(--text-secondary);">{{ skill.experience_years }}年</span>
+                            </div>
+                            <div class="skill-progress">
+                                <div class="skill-progress-fill" style="width: {{ skill.proficiency|mul:25 }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Experiences Section -->
+    {% if experiences %}
+    <section class="py-20 relative" x-data="{ inView: false }" x-intersect="inView = true">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="heading-secondary mb-4">職歴・経歴</h2>
+                <p class="text-body text-lg max-w-2xl mx-auto">これまでの業務経験とプロジェクト実績</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    {% for experience in experiences %}
+                    <div class="glass-card p-8"
+                         x-show="inView" 
+                         x-transition:enter="transition ease-out duration-700"
+                         x-transition:enter-start="opacity-0 transform scale-95"
+                         x-transition:enter-end="opacity-100 transform scale-100">
+                        <div class="flex flex-col lg:flex-row gap-6">
+                            <!-- Date and Company -->
+                            <div class="lg:w-1/3">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
+                                    <div>
+                                        <p class="font-semibold" style="color: var(--text-primary);">{{ experience.start_date|date:"Y年m月" }} - 
+                                            {% if experience.is_current %}
+                                                現在
+                                            {% else %}
+                                                {{ experience.end_date|date:"Y年m月" }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-sm font-medium text-blue-600">{{ experience.company }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Experience Details -->
+                            <div class="lg:w-2/3">
+                                <h3 class="text-xl font-bold mb-3" style="color: var(--text-primary);">{{ experience.title }}</h3>
+                                <p class="text-body mb-4">{{ experience.description }}</p>
+                                
+                                <!-- Role and Team Size -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-user-tie text-blue-600 mr-2"></i>
+                                        <span class="text-sm font-medium" style="color: var(--text-secondary);">役割: {{ experience.role }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-users text-green-600 mr-2"></i>
+                                        <span class="text-sm font-medium" style="color: var(--text-secondary);">チーム規模: {{ experience.team_size }}名</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Technologies -->
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">使用技術:</h4>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% for tech in experience.technologies|split:"," %}
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">{{ tech|trim }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Processes -->
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">担当工程:</h4>
+                                    <p class="text-sm" style="color: var(--text-secondary);">{{ experience.processes }}</p>
+                                </div>
+                                
+                                <!-- Achievements -->
+                                {% if experience.achievements %}
+                                <div>
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">成果・実績:</h4>
+                                    <p class="text-sm" style="color: var(--text-secondary);">{{ experience.achievements }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- Projects Section -->
+    {% if projects %}
+    <section class="py-20 relative" x-data="{ inView: false }" x-intersect="inView = true">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="heading-secondary mb-4">プロジェクト</h2>
+                <p class="text-body text-lg max-w-2xl mx-auto">個人・チームでの開発実績</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for project in projects %}
+                <div class="project-card glass-card p-6 group hover:shadow-xl transition-all duration-300"
+                     data-type="{{ project.project_type }}"
+                     x-show="inView" 
+                     x-transition:enter="transition ease-out duration-700"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100">
+                    
+                    <!-- Project Image -->
+                    {% if project.image %}
+                    <div class="mb-4 relative overflow-hidden rounded-lg">
+                        <img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Project Header -->
+                    <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="project-type-badge px-3 py-1 rounded-full text-xs font-semibold">
+                                {{ project.get_project_type_display }}
+                            </span>
+                            {% if project.is_featured %}
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium flex items-center gap-1">
+                                <i class="fas fa-star"></i>
+                                注目
+                            </span>
+                            {% endif %}
+                        </div>
+                        <h3 class="text-lg font-bold mb-2" style="color: var(--text-primary);">{{ project.title }}</h3>
+                    </div>
+                    
+                    <!-- Description -->
+                    <p class="text-body text-sm mb-4 line-clamp-3">{{ project.description }}</p>
+                    
+                    <!-- Technologies -->
+                    <div class="mb-4">
+                        <h4 class="text-xs font-semibold mb-2 text-gray-600">使用技術</h4>
+                        <div class="flex flex-wrap gap-1">
+                            {% for tech in project.technologies|split:"," %}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-medium">{{ tech|trim }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Project Date -->
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 flex items-center gap-1">
+                            <i class="fas fa-calendar-alt"></i>
+                            {{ project.created_date|date:"Y年m月" }}
+                        </p>
+                    </div>
+                    
+                    <!-- Links -->
+                    <div class="flex gap-2">
+                        {% if project.url %}
+                        <a href="{{ project.url }}" target="_blank" class="btn-secondary flex-1 text-center text-sm">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>デモ</span>
+                        </a>
+                        {% endif %}
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" target="_blank" class="btn-secondary flex-1 text-center text-sm">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <!-- GitHub Section -->
+    {% if github_profile %}
+    <section class="py-20 relative" x-data="{ inView: false }" x-intersect="inView = true">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="heading-secondary mb-4">GitHub活動</h2>
+                <p class="text-body text-lg">オープンソースコントリビューションと開発活動</p>
+            </div>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="glass-morphism p-8">
+                    <!-- Header -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+                        <div class="flex items-center mb-4 md:mb-0">
+                            <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mr-4 shadow-lg">
+                                <i class="fab fa-github text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold" style="color: var(--text-primary);">{{ github_profile.username }}</h3>
+                                <p style="color: var(--text-secondary);">GitHub Developer</p>
+                            </div>
+                        </div>
+                        <button onclick="updateGithubProfile()" class="btn-secondary">
+                            <i class="fas fa-sync"></i>
+                            <span>統計更新</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-folder text-white text-xl"></i>
+                            </div>
+                            <div class="stats-number">{{ github_profile.repositories_count }}</div>
+                            <div class="stats-label">リポジトリ</div>
+                        </div>
+                        
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div class="stats-number">{{ github_profile.followers_count }}</div>
+                            <div class="stats-label">フォロワー</div>
+                        </div>
+                        
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-violet-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-heart text-white text-xl"></i>
+                            </div>
+                            <div class="stats-number">{{ github_profile.following_count }}</div>
+                            <div class="stats-label">フォロー</div>
+                        </div>
+                        
+                        <div class="stats-card group">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                                <i class="fas fa-code text-white text-xl"></i>
+                            </div>
+                            <div class="stats-number">{{ github_profile.gists_count }}</div>
+                            <div class="stats-label">Gist</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Language Statistics -->
+                    {% if github_profile.language_stats %}
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold mb-6 flex items-center" style="color: var(--text-primary);">
+                            <i class="fas fa-code mr-3 text-blue-600"></i>使用言語統計
+                        </h4>
+                        <div class="space-y-3">
+                            {% for language, stats in github_profile.language_stats.items %}
+                            <div class="language-bar">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center">
+                                        <div class="w-4 h-4 rounded-full mr-3" style="background-color: {{ language|language_color }};"></div>
+                                        <span class="font-medium" style="color: var(--text-primary);">{{ language }}</span>
+                                    </div>
+                                    <span class="text-sm font-semibold" style="color: var(--text-secondary);">{{ stats.percentage }}%</span>
+                                </div>
+                                <div class="language-progress">
+                                    <div class="language-progress-fill" style="background-color: {{ language|language_color }}; width: {{ stats.percentage }}%;"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- GitHub Profile Link -->
+                    <div class="text-center">
+                        <a href="https://github.com/{{ github_profile.username }}" 
+                           target="_blank" 
+                           class="btn-primary">
+                            <i class="fab fa-github"></i>
+                            <span>GitHubプロフィールを見る</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    
+    <script>
+        // GitHub Profile Update Function
+        function updateGithubProfile() {
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            
+            // Loading state
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>更新中...';
+            button.disabled = true;
+            
+            fetch(`/portfolio/{{ profile.id }}/update-github/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('エラー: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('エラーが発生しました。しばらく待ってから再試行してください。');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>

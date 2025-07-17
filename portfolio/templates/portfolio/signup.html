@@ -1,0 +1,360 @@
+{% load socialaccount %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新規登録 - Portfolio Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .signup-card {
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .signup-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .form-input {
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+            color: #374151;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-google {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .btn-google:hover {
+            background: #f9fafb;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .primary-text {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #10b981;
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+            filter: blur(40px);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .geometric-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 24px 0;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e5e7eb;
+        }
+        
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 16px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .login-link {
+            color: #3b82f6;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .login-link:hover {
+            color: #10b981;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="text-gray-800 flex items-center justify-center min-h-screen">
+    <!-- Geometric Pattern Background -->
+    <div class="geometric-pattern">
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#10b981" stroke-width="0.5"/>
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#grid)"/>
+        </svg>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-element w-64 h-64 top-10 left-10" style="animation-delay: 0s;"></div>
+    <div class="floating-element w-96 h-96 top-40 right-20" style="animation-delay: -2s;"></div>
+    <div class="floating-element w-80 h-80 bottom-20 left-1/4" style="animation-delay: -4s;"></div>
+    
+    <!-- Signup Form -->
+    <div class="w-full max-w-md mx-auto p-6" x-data="signupForm()">
+        <div class="glass-effect signup-card rounded-3xl p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-white text-2xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold primary-text mb-2">アカウント作成</h1>
+                <p class="text-gray-600 text-sm">ポートフォリオサイトに新規登録</p>
+            </div>
+            
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
+                        <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-triangle{% endif %} mr-2"></i>{{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <!-- Google Signup Button -->
+            {% get_providers as socialaccount_providers %}
+            {% if socialaccount_providers %}
+                {% for provider in socialaccount_providers %}
+                    {% if provider.id == "google" %}
+                    <a href="{% provider_login_url 'google' %}?process=signup" class="btn-google mb-4">
+                        <svg class="w-5 h-5 mr-3" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        Googleアカウントで登録
+                    </a>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            
+            <!-- Divider -->
+            <div class="divider">
+                <span>または</span>
+            </div>
+            
+            <!-- Signup Form -->
+            <form method="post" @submit="handleSubmit" class="space-y-6">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-user mr-2 text-green-500"></i>ユーザー名
+                    </label>
+                    <input type="text" 
+                           id="{{ form.username.id_for_label }}" 
+                           name="{{ form.username.name }}" 
+                           value="{% if form.username.value %}{{ form.username.value }}{% endif %}"
+                           class="form-input" 
+                           required>
+                    {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.username.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Password Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-lock mr-2 text-green-500"></i>パスワード
+                    </label>
+                    <input type="password" 
+                           id="{{ form.password1.id_for_label }}" 
+                           name="{{ form.password1.name }}" 
+                           class="form-input" 
+                           required>
+                    {% if form.password1.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password1.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Password Confirmation Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                        <i class="fas fa-lock mr-2 text-green-500"></i>パスワード（確認）
+                    </label>
+                    <input type="password" 
+                           id="{{ form.password2.id_for_label }}" 
+                           name="{{ form.password2.name }}" 
+                           class="form-input" 
+                           required>
+                    {% if form.password2.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ form.password2.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="btn-primary w-full"
+                        :disabled="isLoading">
+                    <span x-show="!isLoading" class="flex items-center justify-center">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        アカウント作成
+                    </span>
+                    <span x-show="isLoading" class="flex items-center justify-center">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        作成中...
+                    </span>
+                </button>
+            </form>
+            
+            <!-- Login Link -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-600">
+                    すでにアカウントをお持ちの方は
+                    <a href="{% url 'portfolio:login' %}" class="login-link">
+                        こちらからログイン
+                    </a>
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="mt-8 text-center">
+                <div class="flex items-center justify-center space-x-2 text-gray-500 text-sm">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>安全な登録プロセス</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="mt-6 text-center">
+            <div class="glass-effect rounded-xl p-4">
+                <h3 class="text-sm font-medium text-gray-800 mb-2">
+                    <i class="fas fa-gift mr-2 text-green-500"></i>登録特典
+                </h3>
+                <ul class="text-xs text-gray-600 space-y-1">
+                    <li><i class="fas fa-check text-green-500 mr-1"></i>無料でポートフォリオサイト作成</li>
+                    <li><i class="fas fa-check text-green-500 mr-1"></i>プロフェッショナルなデザイン</li>
+                    <li><i class="fas fa-check text-green-500 mr-1"></i>簡単な管理システム</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Alpine.js data
+        function signupForm() {
+            return {
+                isLoading: false,
+                handleSubmit(e) {
+                    this.isLoading = true;
+                    // フォームが送信されるまで少し待機
+                    setTimeout(() => {
+                        if (!this.isLoading) return;
+                        // エラーが発生した場合はローディング状態を解除
+                        this.isLoading = false;
+                    }, 3000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

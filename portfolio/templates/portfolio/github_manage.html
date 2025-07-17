@@ -1,0 +1,133 @@
+{% extends 'portfolio/base_simple.html' %}
+
+{% block title %}GitHub連携 - Portfolio Manager{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="{% url 'portfolio:dashboard' %}">
+            <i class="fas fa-home"></i> ダッシュボード
+        </a>
+        <i class="fas fa-chevron-right"></i>
+        <span>GitHub連携</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="page-header">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="page-title">GitHub連携</h1>
+                <p class="page-subtitle">GitHubプロフィールを連携してください</p>
+            </div>
+            <div>
+                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    戻る
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- GitHub Profile Form -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                <i class="fab fa-github mr-2"></i>GitHub設定
+            </h2>
+            
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="space-y-2">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        <i class="fab fa-github mr-2"></i>GitHubユーザー名
+                    </label>
+                    <input type="text" id="{{ form.username.id_for_label }}" name="{{ form.username.name }}" 
+                           value="{% if form.username.value %}{{ form.username.value }}{% endif %}" 
+                           class="form-input" 
+                           placeholder="octocat">
+                    <div class="text-xs text-gray-500">
+                        例: octocat (https://github.com/octocat の場合)
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary w-full">
+                    <i class="fab fa-github mr-2"></i>GitHub情報を取得・更新
+                </button>
+            </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- GitHub Profile Display -->
+        <div class="card p-6">
+            {% if github_profile %}
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                    <i class="fas fa-chart-bar mr-2 "></i>GitHub統計
+                </h2>
+                
+                <div class="space-y-6">
+                    <!-- GitHub Profile Info -->
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200">
+                        <div class="w-16 h-16 bg-gradient-to-r from-gray-700 to-gray-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fab fa-github text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">{{ github_profile.username }}</h3>
+                        <a href="https://github.com/{{ github_profile.username }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                            <i class="fas fa-external-link-alt mr-1"></i>GitHubで見る
+                        </a>
+                    </div>
+                    
+                    <!-- GitHub Stats -->
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200">
+                            <div class="text-2xl font-bold text-green-600 mb-1">{{ github_profile.repositories_count }}</div>
+                            <div class="text-sm text-gray-600">リポジトリ</div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200">
+                            <div class="text-2xl font-bold text-blue-600 mb-1">{{ github_profile.followers_count }}</div>
+                            <div class="text-sm text-gray-600">フォロワー</div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-200">
+                            <div class="text-2xl font-bold text-purple-600 mb-1">{{ github_profile.following_count }}</div>
+                            <div class="text-sm text-gray-600">フォロー</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Last Updated -->
+                    <div class="text-center text-sm text-gray-500 bg-gray-50 rounded-lg p-2">
+                        <i class="fas fa-clock mr-1"></i>
+                        最終更新: {{ github_profile.last_updated|date:"Y/m/d H:i" }}
+                    </div>
+                </div>
+            {% else %}
+                <h2 class="text-xl font-semibold text-gray-900 mb-6">
+                    <i class="fas fa-question-circle mr-2 "></i>GitHub未設定
+                </h2>
+                
+                <div class="text-center py-8">
+                    <div class="w-20 h-20 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fab fa-github text-white text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">GitHub連携がありません</h3>
+                    <p class="text-gray-600">上のフォームからGitHubユーザー名を入力してください</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <div class="flex justify-between items-center mt-8">
+        <a href="{% url 'portfolio:projects_manage' %}" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i>プロジェクト管理
+        </a>
+        
+        <a href="{% url 'portfolio:dashboard' %}" class="btn-primary">
+            完了: ダッシュボード<i class="fas fa-check ml-2"></i>
+        </a>
+    </div>
+</div>
+{% endblock %}

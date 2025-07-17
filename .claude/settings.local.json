@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(django-admin startproject:*)",
+      "Bash(python manage.py startapp:*)",
+      "Bash(python3 manage.py startapp:*)",
+      "Bash(python3 manage.py makemigrations:*)",
+      "Bash(python3 manage.py migrate:*)",
+      "Bash(mkdir:*)",
+      "Bash(python3 manage.py:*)",
+      "Bash(pkill:*)",
+      "Bash(python manage.py:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "WebFetch(domain:docs.github.com)",
+      "Bash(mv:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(touch:*)",
+      "Bash(nslookup:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(chmod:*)"
+    ],
+    "deny": []
+  }
+}

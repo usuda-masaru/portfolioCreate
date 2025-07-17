@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード - Portfolio Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 3D Background Elements */
+        .bg-3d {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .shape-3d {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.03);
+            border-radius: 50%;
+            animation: float3d 20s ease-in-out infinite;
+        }
+        
+        .shape-3d:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .shape-3d:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            top: 20%;
+            right: 15%;
+            animation-delay: -5s;
+        }
+        
+        .shape-3d:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            bottom: 10%;
+            left: 5%;
+            animation-delay: -10s;
+        }
+        
+        .shape-3d:nth-child(4) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: -15s;
+        }
+        
+        @keyframes float3d {
+            0%, 100% { 
+                transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg); 
+                opacity: 0.5;
+            }
+            25% { 
+                transform: translate3d(30px, -30px, 20px) rotateX(90deg) rotateY(90deg); 
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translate3d(-20px, -60px, -10px) rotateX(180deg) rotateY(180deg); 
+                opacity: 0.3;
+            }
+            75% { 
+                transform: translate3d(-40px, -20px, 30px) rotateX(270deg) rotateY(270deg); 
+                opacity: 0.6;
+            }
+        }
+        
+        /* Simple Card Styles */
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Navigation */
+        .nav-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e5e7eb;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6366f1;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        /* Action Grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .action-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            text-decoration: none;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+        
+        .action-card:hover {
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: #374151;
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: #f8fafc;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: #6366f1;
+            transition: all 0.2s ease;
+        }
+        
+        .action-card:hover .action-icon {
+            background: #6366f1;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .action-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .action-desc {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        /* Header */
+        .page-header {
+            padding: 2rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            margin-bottom: 2rem;
+        }
+        
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .page-subtitle {
+            color: #6b7280;
+        }
+        
+        /* Button */
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+        
+        /* Recommendation Card */
+        .recommendation-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #6366f1;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+        
+        .recommendation-desc {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .main-content {
+            padding-top: 5rem;
+            min-height: 100vh;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 3D Background -->
+    <div class="bg-3d">
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+        <div class="shape-3d"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <div class="container">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-bold text-gray-900">Portfolio Manager</h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-indigo-600 text-sm"></i>
+                            </div>
+                            <span class="text-sm text-gray-700">{{ user.username }}</span>
+                        </div>
+                        <a href="{% url 'portfolio:logout' %}" class="text-gray-600 hover:text-gray-900 text-sm">
+                            <i class="fas fa-sign-out-alt mr-1"></i>ログアウト
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <!-- Messages -->
+            {% if messages %}
+                <div class="mb-6 space-y-4">
+                    {% for message in messages %}
+                        <div class="card p-4 border-l-4 {% if message.tags == 'success' %}border-green-500 bg-green-50{% elif message.tags == 'error' %}border-red-500 bg-red-50{% elif message.tags == 'warning' %}border-yellow-500 bg-yellow-50{% else %}border-blue-500 bg-blue-50{% endif %}">
+                            <div class="flex items-center">
+                                <i class="fas {% if message.tags == 'success' %}fa-check-circle text-green-600{% elif message.tags == 'error' %}fa-exclamation-circle text-red-600{% elif message.tags == 'warning' %}fa-exclamation-triangle text-yellow-600{% else %}fa-info-circle text-blue-600{% endif %} mr-3"></i>
+                                <span class="text-gray-700">{{ message }}</span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Header -->
+            <div class="page-header">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="page-title">ダッシュボード</h1>
+                        <p class="page-subtitle">ポートフォリオの管理と編集を行えます</p>
+                    </div>
+                    {% if profile %}
+                    <div>
+                        <a href="{% url 'portfolio:detail' profile.id %}" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 1rem 2rem; font-size: 1.1rem;">
+                            <i class="fas fa-external-link-alt"></i>
+                            ポートフォリオを表示
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="action-icon" style="margin: 0 auto 1rem;">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <span class="stat-number">{{ skills_count }}</span>
+                    <div class="stat-label">登録済みスキル</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="action-icon" style="margin: 0 auto 1rem;">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <span class="stat-number">{{ experiences_count }}</span>
+                    <div class="stat-label">職歴・経験</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="action-icon" style="margin: 0 auto 1rem;">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <span class="stat-number">{{ projects_count }}</span>
+                    <div class="stat-label">プロジェクト</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="action-icon" style="margin: 0 auto 1rem;">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <span class="stat-number">{% if profile %}100{% else %}25{% endif %}%</span>
+                    <div class="stat-label">完成度</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">クイックアクション</h2>
+                
+                <div class="action-grid">
+                    <a href="{% url 'portfolio:profile_edit' %}" class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-user-edit"></i>
+                        </div>
+                        <div class="action-title">プロフィール編集</div>
+                        <div class="action-desc">基本情報を更新</div>
+                    </a>
+                    
+                    <a href="{% url 'portfolio:skills_manage' %}" class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="action-title">スキル管理</div>
+                        <div class="action-desc">技術スキルを追加・編集</div>
+                    </a>
+                    
+                    <a href="{% url 'portfolio:experiences_manage' %}" class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="action-title">経歴管理</div>
+                        <div class="action-desc">職歴・経験を記録</div>
+                    </a>
+                    
+                    <a href="{% url 'portfolio:projects_manage' %}" class="action-card">
+                        <div class="action-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="action-title">プロジェクト管理</div>
+                        <div class="action-desc">作品・成果物を追加</div>
+                    </a>
+                    
+                    <a href="{% url 'portfolio:github_manage' %}" class="action-card">
+                        <div class="action-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="action-title">GitHub連携</div>
+                        <div class="action-desc">開発活動を自動反映</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Setup/Recommendations -->
+            {% if not profile %}
+            <div class="card p-8 text-center mb-8">
+                <div class="action-icon" style="margin: 0 auto 1.5rem; width: 80px; height: 80px; font-size: 2rem;">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">ポートフォリオを作成しましょう</h2>
+                <p class="text-gray-600 mb-6 max-w-md mx-auto">
+                    まずは基本情報を入力して、あなただけのポートフォリオサイトを作成しましょう。
+                </p>
+                <a href="{% url 'portfolio:profile_edit' %}" class="btn-primary">
+                    <i class="fas fa-plus"></i>
+                    プロフィールを作成
+                </a>
+            </div>
+            {% else %}
+            <div class="card p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">おすすめのアクション</h3>
+                
+                <div class="space-y-4">
+                    {% if skills_count < 5 %}
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">
+                            <i class="fas fa-plus-circle text-green-600 mr-2"></i>
+                            スキルを追加
+                        </div>
+                        <div class="recommendation-desc">少なくとも5つ以上のスキルを登録することをおすすめします</div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if projects_count == 0 %}
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">
+                            <i class="fas fa-star text-purple-600 mr-2"></i>
+                            プロジェクトを追加
+                        </div>
+                        <div class="recommendation-desc">作品をアップロードして実力をアピールしましょう</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="recommendation-card">
+                        <div class="recommendation-title">
+                            <i class="fas fa-share-alt text-orange-600 mr-2"></i>
+                            ポートフォリオを共有
+                        </div>
+                        <div class="recommendation-desc">完成したサイトをSNSでシェアしてアピールしましょう</div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-200 py-6 mt-12" style="background: rgba(255, 255, 255, 0.95);">
+        <div class="container">
+            <div class="flex items-center justify-between text-sm text-gray-500">
+                <div>
+                    <i class="fas fa-code mr-2"></i>Portfolio Management System
+                </div>
+                <div>
+                    Powered by Django & TailwindCSS
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
