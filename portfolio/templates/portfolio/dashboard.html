@@ -399,50 +399,47 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
+            <!-- Quick Access -->
             <div class="mb-8">
-                <h2 class="text-lg font-semibold text-gray-900 mb-4">クイックアクション</h2>
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">クイックアクセス</h2>
+                    <a href="{% url 'portfolio:manage_menu' %}" class="btn-primary">
+                        <i class="fas fa-cog mr-2"></i>ポートフォリオ管理
+                    </a>
+                </div>
                 
-                <div class="action-grid">
-                    <a href="{% url 'portfolio:profile_edit' %}" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-user-edit"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Portfolio View Card -->
+                    {% if profile %}
+                    <div class="card p-6 border-l-4 border-indigo-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-external-link-alt text-indigo-600 mr-2"></i>ポートフォリオを表示
+                                </h3>
+                                <p class="text-gray-600 text-sm">完成したポートフォリオを確認・共有</p>
+                            </div>
+                            <a href="{% url 'portfolio:detail' profile.id %}" target="_blank" class="btn-primary">
+                                表示する
+                            </a>
                         </div>
-                        <div class="action-title">プロフィール編集</div>
-                        <div class="action-desc">基本情報を更新</div>
-                    </a>
+                    </div>
+                    {% endif %}
                     
-                    <a href="{% url 'portfolio:skills_manage' %}" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-code"></i>
+                    <!-- Management Access Card -->
+                    <div class="card p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                                    <i class="fas fa-edit text-green-600 mr-2"></i>コンテンツ管理
+                                </h3>
+                                <p class="text-gray-600 text-sm">プロフィール、スキル、経歴、プロジェクトの編集</p>
+                            </div>
+                            <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
+                                管理画面へ
+                            </a>
                         </div>
-                        <div class="action-title">スキル管理</div>
-                        <div class="action-desc">技術スキルを追加・編集</div>
-                    </a>
-                    
-                    <a href="{% url 'portfolio:experiences_manage' %}" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-briefcase"></i>
-                        </div>
-                        <div class="action-title">経歴管理</div>
-                        <div class="action-desc">職歴・経験を記録</div>
-                    </a>
-                    
-                    <a href="{% url 'portfolio:projects_manage' %}" class="action-card">
-                        <div class="action-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <div class="action-title">プロジェクト管理</div>
-                        <div class="action-desc">作品・成果物を追加</div>
-                    </a>
-                    
-                    <a href="{% url 'portfolio:github_manage' %}" class="action-card">
-                        <div class="action-icon">
-                            <i class="fab fa-github"></i>
-                        </div>
-                        <div class="action-title">GitHub連携</div>
-                        <div class="action-desc">開発活動を自動反映</div>
-                    </a>
+                    </div>
                 </div>
             </div>
 

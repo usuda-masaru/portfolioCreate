@@ -5,11 +5,23 @@ import uuid
 
 
 class Profile(models.Model):
+    GENDER_CHOICES = [
+        ('male', '男性'),
+        ('female', '女性'),
+        ('other', 'その他'),
+        ('prefer_not_to_say', '回答しない'),
+    ]
+    
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, verbose_name="名前")
+    age = models.IntegerField(null=True, blank=True, verbose_name="年齢")
+    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, blank=True, verbose_name="性別")
     title = models.CharField(max_length=200, verbose_name="職種・肩書き")
-    bio = models.TextField(verbose_name="自己紹介")
+    specialties = models.TextField(blank=True, verbose_name="得意分野", help_text="例：Webアプリケーション開発, API開発, バッチ処理など")
+    skilled_technologies = models.TextField(blank=True, verbose_name="得意技術", help_text="例：Python, Django, API実装など")
+    business_domains = models.TextField(blank=True, verbose_name="得意業務", help_text="例：金融系, EC系, 業務システムなど")
+    bio = models.TextField(verbose_name="自己PR")
     email = models.EmailField(verbose_name="メールアドレス")
     location = models.CharField(max_length=100, blank=True, verbose_name="居住地")
     website = models.URLField(blank=True, verbose_name="ウェブサイト")

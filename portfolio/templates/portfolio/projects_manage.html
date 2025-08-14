@@ -11,6 +11,10 @@
             <i class="fas fa-home"></i> ダッシュボード
         </a>
         <i class="fas fa-chevron-right"></i>
+        <a href="{% url 'portfolio:manage_menu' %}">
+            <i class="fas fa-cog"></i> ポートフォリオ管理
+        </a>
+        <i class="fas fa-chevron-right"></i>
         <span>プロジェクト管理</span>
     </div>
     
@@ -113,9 +117,26 @@
                 <label for="{{ form.image.id_for_label }}" class="form-label">
                     <i class="fas fa-image mr-2"></i>プロジェクト画像
                 </label>
+                
+                <!-- Image Preview Container -->
+                <div id="imagePreviewContainer" class="mb-4" style="display: none;">
+                    <div class="relative bg-gray-100 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-sm font-medium text-gray-700">プレビュー</span>
+                            <button type="button" onclick="clearImagePreview()" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <img id="imagePreview" src="" alt="Preview" class="w-full max-w-md h-40 object-cover rounded-lg mx-auto">
+                        <div id="imageDetails" class="mt-2 text-xs text-gray-500 text-center"></div>
+                    </div>
+                </div>
+                
                 <input type="file" id="{{ form.image.id_for_label }}" name="{{ form.image.name }}" accept="image/*" 
-                       class="form-input">
-                <div class="text-sm text-gray-500">推奨サイズ: 1200x600px</div>
+                       class="form-input" onchange="previewImage(this)">
+                <div class="text-sm text-gray-500">
+                    推奨サイズ: 1200x600px | 対応形式: JPG, PNG, GIF | 最大サイズ: 5MB
+                </div>
             </div>
             
             <!-- 説明 -->
@@ -310,6 +331,72 @@ function cancelEditProject() {
     // フォームのアクションを元に戻す
     const form = document.querySelector('form');
     form.action = '';
+    
+    // 画像プレビューもクリア
+    clearImagePreview();
+}
+
+// 画像プレビュー機能
+function previewImage(input) {
+    const file = input.files[0];
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('imagePreview');
+    const imageDetails = document.getElementById('imageDetails');
+    
+    if (file) {
+        // ファイルサイズチェック (5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (file.size > maxSize) {
+            alert('ファイルサイズが大きすぎます。5MB以下の画像を選択してください。');
+            input.value = '';
+            return;
+        }
+        
+        // ファイル形式チェック
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('対応していないファイル形式です。JPG、PNG、GIFファイルを選択してください。');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImage.src = e.target.result;
+            previewContainer.style.display = 'block';
+            
+            // ファイル詳細を表示
+            const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+            imageDetails.textContent = `ファイル名: ${file.name} | サイズ: ${sizeInMB}MB | 形式: ${file.type}`;
+            
+            // 画像の実際のサイズを取得
+            previewImage.onload = function() {
+                const width = this.naturalWidth;
+                const height = this.naturalHeight;
+                imageDetails.textContent += ` | 解像度: ${width}x${height}px`;
+                
+                // 推奨サイズの警告
+                if (width < 1200 || height < 600) {
+                    imageDetails.innerHTML += '<br><span class="text-amber-600">⚠️ 推奨サイズは1200x600px以上です</span>';
+                }
+            };
+        };
+        reader.readAsDataURL(file);
+    } else {
+        clearImagePreview();
+    }
+}
+
+function clearImagePreview() {
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('imagePreview');
+    const imageInput = document.querySelector('input[name="image"]');
+    
+    previewContainer.style.display = 'none';
+    previewImage.src = '';
+    if (imageInput) {
+        imageInput.value = '';
+    }
 }
 </script>
 {% endblock %}

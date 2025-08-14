@@ -21,19 +21,43 @@ class CustomAuthenticationForm(AuthenticationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['name', 'title', 'bio', 'email', 'location', 'website', 'twitter', 'qiita', 'avatar']
+        fields = ['name', 'age', 'gender', 'title', 'specialties', 'skilled_technologies', 'business_domains', 'bio', 'email', 'location', 'website', 'twitter', 'qiita', 'avatar']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
                 'placeholder': 'お名前'
             }),
+            'age': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': '年齢',
+                'min': 18,
+                'max': 100
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300'
+            }),
             'title': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
                 'placeholder': '職種・肩書き'
             }),
+            'specialties': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': 'フロントエンド開発, バックエンド開発, インフラ構築, データ分析, モバイル開発',
+                'rows': 3
+            }),
+            'skilled_technologies': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': 'JavaScript, React, Node.js, Python, Docker, AWS, Git, MySQL',
+                'rows': 3
+            }),
+            'business_domains': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': 'Webサービス, SaaS, EC, 社内システム, スタートアップ',
+                'rows': 2
+            }),
             'bio': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '自己紹介',
+                'placeholder': '自己PR',
                 'rows': 5
             }),
             'email': forms.EmailInput(attrs={

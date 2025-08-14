@@ -1,0 +1,217 @@
+{% load portfolio_extras %}
+<!-- 職歴・経歴管理セクション -->
+<div class="space-y-6">
+    <!-- 経歴追加フォーム -->
+    <div class="card p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">
+            <i class="fas fa-plus mr-2"></i>職歴・経歴を追加・編集
+        </h3>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="experiences">
+            <input type="hidden" name="edit_id" id="edit_id" value="">
+            
+            <!-- 基本情報 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="{{ experience_form.title.id_for_label }}" class="form-label">
+                        <i class="fas fa-briefcase mr-2"></i>案件名・職種
+                    </label>
+                    <input type="text" name="{{ experience_form.title.name }}" id="{{ experience_form.title.id_for_label }}" 
+                           class="form-input" placeholder="フロントエンドエンジニア"
+                           value="{{ experience_form.title.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ experience_form.role.id_for_label }}" class="form-label">
+                        <i class="fas fa-user-tie mr-2"></i>役割
+                    </label>
+                    <input type="text" name="{{ experience_form.role.name }}" id="{{ experience_form.role.id_for_label }}" 
+                           class="form-input" placeholder="リードエンジニア"
+                           value="{{ experience_form.role.value|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- 期間 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="form-group">
+                    <label for="{{ experience_form.start_date.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-alt mr-2"></i>開始日
+                    </label>
+                    <input type="date" name="{{ experience_form.start_date.name }}" id="{{ experience_form.start_date.id_for_label }}" 
+                           class="form-input" value="{{ experience_form.start_date.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ experience_form.end_date.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar-check mr-2"></i>終了日
+                    </label>
+                    <input type="date" name="{{ experience_form.end_date.name }}" id="{{ experience_form.end_date.id_for_label }}" 
+                           class="form-input" value="{{ experience_form.end_date.value|default:'' }}">
+                </div>
+                
+                <div class="form-group flex items-center">
+                    <label class="form-label flex items-center">
+                        <input type="checkbox" name="{{ experience_form.is_current.name }}" id="{{ experience_form.is_current.id_for_label }}" 
+                               class="mr-2" {% if experience_form.is_current.value %}checked{% endif %}>
+                        <i class="fas fa-clock mr-2"></i>現在も継続中
+                    </label>
+                </div>
+            </div>
+            
+            <!-- チーム情報 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="{{ experience_form.team_size.id_for_label }}" class="form-label">
+                        <i class="fas fa-users mr-2"></i>チーム規模
+                    </label>
+                    <input type="number" name="{{ experience_form.team_size.name }}" id="{{ experience_form.team_size.id_for_label }}" 
+                           class="form-input" placeholder="5" min="1"
+                           value="{{ experience_form.team_size.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ experience_form.processes.id_for_label }}" class="form-label">
+                        <i class="fas fa-tasks mr-2"></i>担当工程
+                    </label>
+                    <input type="text" name="{{ experience_form.processes.name }}" id="{{ experience_form.processes.id_for_label }}" 
+                           class="form-input" placeholder="要件定義, 設計, 開発"
+                           value="{{ experience_form.processes.value|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- 技術 -->
+            <div class="form-group">
+                <label for="{{ experience_form.technologies.id_for_label }}" class="form-label">
+                    <i class="fas fa-code mr-2"></i>使用技術
+                </label>
+                <input type="text" name="{{ experience_form.technologies.name }}" id="{{ experience_form.technologies.id_for_label }}" 
+                       class="form-input" placeholder="Python, Django, React, PostgreSQL"
+                       value="{{ experience_form.technologies.value|default:'' }}">
+            </div>
+            
+            <!-- 詳細説明 (Markdown対応) -->
+            <div class="form-group">
+                <label for="{{ experience_form.description.id_for_label }}" class="form-label">
+                    <i class="fas fa-align-left mr-2"></i>案件内容・詳細説明
+                    <span class="text-sm text-gray-500">(Markdown記法対応)</span>
+                </label>
+                <textarea name="{{ experience_form.description.name }}" id="{{ experience_form.description.id_for_label }}" 
+                          rows="6" class="form-input" 
+                          placeholder="## 概要&#10;案件の概要を記載&#10;&#10;## 担当業務&#10;- 要件定義&#10;- 設計&#10;- 開発">{{ experience_form.description.value|default:'' }}</textarea>
+            </div>
+            
+            <!-- 成果・実績 -->
+            <div class="form-group">
+                <label for="{{ experience_form.achievements.id_for_label }}" class="form-label">
+                    <i class="fas fa-trophy mr-2"></i>成果・実績
+                    <span class="text-sm text-gray-500">(Markdown記法対応)</span>
+                </label>
+                <textarea name="{{ experience_form.achievements.name }}" id="{{ experience_form.achievements.id_for_label }}" 
+                          rows="4" class="form-input"
+                          placeholder="- パフォーマンス向上（30%改善）&#10;- チーム生産性向上&#10;- 新機能リリース">{{ experience_form.achievements.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="flex items-center justify-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i>経歴を追加
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- 経歴一覧 -->
+    {% if experiences %}
+        <div class="space-y-4">
+            {% for experience in experiences %}
+            <div class="card p-6 group hover:bg-gray-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-gray-900">{{ experience.title }}</h4>
+                        <p class="text-blue-600 font-medium">{{ experience.role }}</p>
+                        <div class="flex items-center text-sm text-gray-600 mt-2">
+                            <i class="fas fa-calendar mr-2"></i>
+                            {{ experience.start_date|date:"Y年m月" }} - 
+                            {% if experience.is_current %}
+                                現在
+                            {% else %}
+                                {{ experience.end_date|date:"Y年m月" }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button onclick="editExperience({{ experience.id }}, '{{ experience.title|escapejs }}', '{{ experience.start_date|date:'Y-m-d' }}', '{{ experience.end_date|date:'Y-m-d'|default:'' }}', {{ experience.is_current|yesno:'true,false' }}, '{{ experience.description|escapejs }}', '{{ experience.role|escapejs }}', {{ experience.team_size|default:'null' }}, '{{ experience.technologies|escapejs }}', '{{ experience.processes|escapejs }}', '{{ experience.achievements|escapejs }}')" 
+                                class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <a href="?section=experiences&delete={{ experience.id }}" 
+                           class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50"
+                           onclick="return confirm('この経歴を削除してもよろしいですか？');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-users mr-2"></i>
+                        チーム規模: {{ experience.team_size }}名
+                    </div>
+                    <div class="flex items-center text-sm text-gray-600">
+                        <i class="fas fa-tasks mr-2"></i>
+                        {{ experience.processes }}
+                    </div>
+                </div>
+                
+                {% if experience.technologies %}
+                <div class="mb-4">
+                    <h5 class="text-sm font-medium text-gray-700 mb-2">使用技術:</h5>
+                    <div class="flex flex-wrap gap-2">
+                        {% for tech in experience.technologies|split:"," %}
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{{ tech|trim }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="prose prose-sm max-w-none text-gray-700">
+                    {{ experience.description|markdown_to_html|safe|truncatewords_html:20 }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card p-6">
+            <div class="text-center py-8">
+                <i class="fas fa-briefcase text-gray-400 text-4xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">職歴・経歴が登録されていません</h3>
+                <p class="text-gray-600 mb-4">職務経験やプロジェクト実績を追加しましょう（Markdown対応）</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function editExperience(id, title, startDate, endDate, isCurrent, description, role, teamSize, technologies, processes, achievements) {
+    // フォームに値を設定
+    document.querySelector('input[name="title"]').value = title;
+    document.querySelector('input[name="role"]').value = role;
+    document.querySelector('input[name="start_date"]').value = startDate;
+    document.querySelector('input[name="end_date"]').value = endDate || '';
+    document.querySelector('input[name="is_current"]').checked = isCurrent;
+    document.querySelector('input[name="team_size"]').value = teamSize || '';
+    document.querySelector('input[name="technologies"]').value = technologies || '';
+    document.querySelector('input[name="processes"]').value = processes || '';
+    document.querySelector('textarea[name="description"]').value = description || '';
+    document.querySelector('textarea[name="achievements"]').value = achievements || '';
+    document.querySelector('input[name="edit_id"]').value = id;
+    
+    // ボタンのテキストを変更
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>経歴を更新';
+    
+    // フォームまでスクロール
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+}
+</script>

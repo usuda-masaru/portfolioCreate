@@ -1,0 +1,298 @@
+{% load portfolio_extras %}
+<!-- プロフィール編集セクション -->
+<div class="card p-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-6">
+        <i class="fas fa-user-edit mr-2"></i>プロフィール情報
+    </h3>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- 基本情報 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="form-group">
+                <label for="{{ profile_form.name.id_for_label }}" class="form-label">
+                    <i class="fas fa-user mr-2"></i>名前
+                </label>
+                <input type="text" id="{{ profile_form.name.id_for_label }}" name="{{ profile_form.name.name }}" 
+                       value="{% if profile_form.name.value %}{{ profile_form.name.value }}{% endif %}" 
+                       class="form-input" required>
+                {% if profile_form.name.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.age.id_for_label }}" class="form-label">
+                    <i class="fas fa-calendar mr-2"></i>年齢
+                </label>
+                <input type="number" id="{{ profile_form.age.id_for_label }}" name="{{ profile_form.age.name }}" 
+                       value="{% if profile_form.age.value %}{{ profile_form.age.value }}{% endif %}" 
+                       class="form-input" min="18" max="100">
+                {% if profile_form.age.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.age.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.gender.id_for_label }}" class="form-label">
+                    <i class="fas fa-venus-mars mr-2"></i>性別
+                </label>
+                <select id="{{ profile_form.gender.id_for_label }}" name="{{ profile_form.gender.name }}" class="form-input">
+                    <option value="">選択してください</option>
+                    {% for value, label in profile_form.gender.field.choices %}
+                    <option value="{{ value }}" {% if profile_form.gender.value == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+                {% if profile_form.gender.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.gender.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 職種・肩書き -->
+        <div class="form-group mb-6">
+            <label for="{{ profile_form.title.id_for_label }}" class="form-label">
+                <i class="fas fa-briefcase mr-2"></i>職種・肩書き
+            </label>
+            <input type="text" id="{{ profile_form.title.id_for_label }}" name="{{ profile_form.title.name }}" 
+                   value="{% if profile_form.title.value %}{{ profile_form.title.value }}{% endif %}" 
+                   class="form-input" required>
+            {% if profile_form.title.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ profile_form.title.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <!-- スキル・専門分野 -->
+        <div class="grid grid-cols-1 gap-6 mb-6">
+            <div class="form-group">
+                <label for="{{ profile_form.specialties.id_for_label }}" class="form-label">
+                    <i class="fas fa-star mr-2"></i>得意分野
+                </label>
+                <textarea id="{{ profile_form.specialties.id_for_label }}" name="{{ profile_form.specialties.name }}" 
+                          rows="3" class="form-input" placeholder="フロントエンド開発, バックエンド開発, インフラ構築, データ分析, モバイル開発">{% if profile_form.specialties.value %}{{ profile_form.specialties.value }}{% endif %}</textarea>
+                {% if profile_form.specialties.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.specialties.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.skilled_technologies.id_for_label }}" class="form-label">
+                    <i class="fas fa-code mr-2"></i>得意技術
+                </label>
+                <textarea id="{{ profile_form.skilled_technologies.id_for_label }}" name="{{ profile_form.skilled_technologies.name }}" 
+                          rows="3" class="form-input" placeholder="JavaScript, React, Node.js, Python, Docker, AWS, Git, MySQL">{% if profile_form.skilled_technologies.value %}{{ profile_form.skilled_technologies.value }}{% endif %}</textarea>
+                {% if profile_form.skilled_technologies.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.skilled_technologies.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.business_domains.id_for_label }}" class="form-label">
+                    <i class="fas fa-building mr-2"></i>得意業務
+                </label>
+                <textarea id="{{ profile_form.business_domains.id_for_label }}" name="{{ profile_form.business_domains.name }}" 
+                          rows="2" class="form-input" placeholder="Webサービス, SaaS, EC, 社内システム, スタートアップ">{% if profile_form.business_domains.value %}{{ profile_form.business_domains.value }}{% endif %}</textarea>
+                {% if profile_form.business_domains.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.business_domains.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- 自己PR -->
+        <div class="form-group mb-6">
+            <label for="{{ profile_form.bio.id_for_label }}" class="form-label">
+                <i class="fas fa-align-left mr-2"></i>自己PR
+            </label>
+            <textarea id="{{ profile_form.bio.id_for_label }}" name="{{ profile_form.bio.name }}" 
+                      rows="5" class="form-input" required>{% if profile_form.bio.value %}{{ profile_form.bio.value }}{% endif %}</textarea>
+            {% if profile_form.bio.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ profile_form.bio.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <!-- 連絡先情報 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="form-group">
+                <label for="{{ profile_form.email.id_for_label }}" class="form-label">
+                    <i class="fas fa-envelope mr-2"></i>メールアドレス
+                </label>
+                <input type="email" id="{{ profile_form.email.id_for_label }}" name="{{ profile_form.email.name }}" 
+                       value="{% if profile_form.email.value %}{{ profile_form.email.value }}{% endif %}" 
+                       class="form-input" required>
+                {% if profile_form.email.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.email.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.location.id_for_label }}" class="form-label">
+                    <i class="fas fa-map-marker-alt mr-2"></i>居住地
+                </label>
+                <input type="text" id="{{ profile_form.location.id_for_label }}" name="{{ profile_form.location.name }}" 
+                       value="{% if profile_form.location.value %}{{ profile_form.location.value }}{% endif %}" 
+                       class="form-input">
+                {% if profile_form.location.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.location.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- SNS・ウェブサイト -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="form-group">
+                <label for="{{ profile_form.website.id_for_label }}" class="form-label">
+                    <i class="fas fa-globe mr-2"></i>ウェブサイト
+                </label>
+                <input type="url" id="{{ profile_form.website.id_for_label }}" name="{{ profile_form.website.name }}" 
+                       value="{% if profile_form.website.value %}{{ profile_form.website.value }}{% endif %}" 
+                       class="form-input" placeholder="https://example.com">
+                {% if profile_form.website.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.website.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.twitter.id_for_label }}" class="form-label">
+                    <i class="fab fa-twitter mr-2"></i>Twitter
+                </label>
+                <input type="url" id="{{ profile_form.twitter.id_for_label }}" name="{{ profile_form.twitter.name }}" 
+                       value="{% if profile_form.twitter.value %}{{ profile_form.twitter.value }}{% endif %}" 
+                       class="form-input" placeholder="https://twitter.com/username">
+                {% if profile_form.twitter.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.twitter.errors.0 }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ profile_form.qiita.id_for_label }}" class="form-label">
+                    <i class="fas fa-code mr-2"></i>Qiita
+                </label>
+                <input type="url" id="{{ profile_form.qiita.id_for_label }}" name="{{ profile_form.qiita.name }}" 
+                       value="{% if profile_form.qiita.value %}{{ profile_form.qiita.value }}{% endif %}" 
+                       class="form-input" placeholder="https://qiita.com/username">
+                {% if profile_form.qiita.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ profile_form.qiita.errors.0 }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- プロフィール画像 -->
+        <div class="form-group mb-6">
+            <label for="{{ profile_form.avatar.id_for_label }}" class="form-label">
+                <i class="fas fa-image mr-2"></i>プロフィール画像
+            </label>
+            
+            <!-- 現在の画像表示 -->
+            {% if profile and profile.avatar %}
+            <div class="mb-4">
+                <img src="{{ profile.avatar.url }}" alt="現在のプロフィール画像" class="w-32 h-32 object-cover rounded-lg border">
+                <p class="text-sm text-gray-600 mt-2">現在の画像</p>
+            </div>
+            {% endif %}
+            
+            <input type="file" id="{{ profile_form.avatar.id_for_label }}" name="{{ profile_form.avatar.name }}" 
+                   accept="image/*" class="form-input">
+            <div class="text-sm text-gray-500 mt-1">
+                推奨サイズ: 400x400px | 対応形式: JPG, PNG, GIF | 最大サイズ: 5MB
+            </div>
+            {% if profile_form.avatar.errors %}
+                <div class="text-red-500 text-sm mt-1">{{ profile_form.avatar.errors.0 }}</div>
+            {% endif %}
+        </div>
+        
+        <!-- 保存ボタン -->
+        <div class="flex items-center justify-between">
+            <div class="text-sm text-gray-600">
+                <i class="fas fa-info-circle mr-1"></i>
+                プロフィール情報は公開ポートフォリオに表示されます
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save mr-2"></i>プロフィールを保存
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- プレビューセクション -->
+{% if profile %}
+<div class="card p-6 mt-6">
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">
+        <i class="fas fa-eye mr-2"></i>プレビュー
+    </h3>
+    
+    <div class="bg-gray-50 p-6 rounded-lg">
+        <div class="flex items-start space-x-4">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="w-20 h-20 object-cover rounded-full">
+            {% else %}
+                <div class="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center">
+                    <i class="fas fa-user text-gray-500 text-2xl"></i>
+                </div>
+            {% endif %}
+            
+            <div class="flex-1">
+                <h4 class="text-xl font-bold text-gray-900">{{ profile.name }}</h4>
+                {% if profile.age or profile.gender %}
+                <div class="text-sm text-gray-600 mb-1">
+                    {% if profile.age %}<span>{{ profile.age }}歳</span>{% endif %}
+                    {% if profile.age and profile.gender %} / {% endif %}
+                    {% if profile.gender %}<span>{{ profile.get_gender_display }}</span>{% endif %}
+                </div>
+                {% endif %}
+                <p class="text-blue-600 font-medium mb-2">{{ profile.title }}</p>
+                
+                {% if profile.specialties %}
+                <div class="mb-2">
+                    <span class="text-xs font-medium text-gray-500">得意分野:</span>
+                    <p class="text-gray-700 text-sm">{{ profile.specialties }}</p>
+                </div>
+                {% endif %}
+                
+                {% if profile.skilled_technologies %}
+                <div class="mb-2">
+                    <span class="text-xs font-medium text-gray-500">得意技術:</span>
+                    <p class="text-gray-700 text-sm">{{ profile.skilled_technologies }}</p>
+                </div>
+                {% endif %}
+                
+                {% if profile.business_domains %}
+                <div class="mb-2">
+                    <span class="text-xs font-medium text-gray-500">得意業務:</span>
+                    <p class="text-gray-700 text-sm">{{ profile.business_domains }}</p>
+                </div>
+                {% endif %}
+                
+                <p class="text-gray-700 text-sm mt-3">{{ profile.bio|truncatewords:15 }}</p>
+                
+                <div class="flex items-center space-x-4 mt-3 text-sm text-gray-600">
+                    {% if profile.location %}
+                        <span><i class="fas fa-map-marker-alt mr-1"></i>{{ profile.location }}</span>
+                    {% endif %}
+                    {% if profile.email %}
+                        <span><i class="fas fa-envelope mr-1"></i>{{ profile.email }}</span>
+                    {% endif %}
+                </div>
+                
+                <div class="flex items-center space-x-3 mt-3">
+                    {% if profile.website %}
+                        <a href="{{ profile.website }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-globe"></i>
+                        </a>
+                    {% endif %}
+                    {% if profile.twitter %}
+                        <a href="{{ profile.twitter }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    {% endif %}
+                    {% if profile.qiita %}
+                        <a href="{{ profile.qiita }}" target="_blank" class="text-blue-600 hover:text-blue-800">
+                            <i class="fas fa-code"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

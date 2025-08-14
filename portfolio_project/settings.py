@@ -201,7 +201,7 @@ ACCOUNT_LOGOUT_ON_GET = True
 
 # Login URLs
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/portfolio/dashboard/'
+LOGIN_REDIRECT_URL = '/portfolio/manage/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Default primary key field type

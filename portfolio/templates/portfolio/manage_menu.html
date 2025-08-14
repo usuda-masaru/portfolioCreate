@@ -1,0 +1,57 @@
+{% extends 'portfolio/base_manage.html' %}
+{% load portfolio_extras %}
+
+{% block title %}ポートフォリオ管理 - Portfolio Manager{% endblock %}
+
+{% block page_title %}
+    {% if section == 'skills' %}
+        スキル管理
+    {% elif section == 'experiences' %}
+        職歴・経歴管理
+    {% elif section == 'projects' %}
+        プロジェクト管理
+    {% elif section == 'github' %}
+        GitHub連携
+    {% else %}
+        プロフィール編集
+    {% endif %}
+{% endblock %}
+
+{% block page_subtitle %}
+    {% if section == 'skills' %}
+        技術スキル、経験年数、習熟度を管理
+    {% elif section == 'experiences' %}
+        職務経験、プロジェクト実績を記録（Markdown対応）
+    {% elif section == 'projects' %}
+        作品・成果物、画像、リンクを管理
+    {% elif section == 'github' %}
+        開発活動、言語統計の自動反映を設定
+    {% else %}
+        基本情報、自己紹介、連絡先を設定
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- Section Content Based on Selection -->
+{% if section == 'skills' %}
+    <!-- スキル管理コンテンツ -->
+    {% include 'portfolio/sections/skills_section.html' %}
+
+{% elif section == 'experiences' %}
+    <!-- 職歴・経歴管理コンテンツ -->
+    {% include 'portfolio/sections/experiences_section.html' %}
+
+{% elif section == 'projects' %}
+    <!-- プロジェクト管理コンテンツ -->
+    {% include 'portfolio/sections/projects_section.html' %}
+
+{% elif section == 'github' %}
+    <!-- GitHub連携コンテンツ -->
+    {% include 'portfolio/sections/github_section.html' %}
+
+{% else %}
+    <!-- デフォルト: プロフィール編集 -->
+    {% include 'portfolio/sections/profile_section.html' %}
+
+{% endif %}
+{% endblock %}

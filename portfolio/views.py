@@ -181,7 +181,7 @@ def custom_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('portfolio:dashboard')
+                return redirect('portfolio:manage_menu')
             else:
                 messages.error(request, 'ユーザー名またはパスワードが間違っています。')
     else:
@@ -227,6 +227,197 @@ def dashboard(request):
     }
     
     return render(request, 'portfolio/dashboard.html', context)
+
+
+@login_required
+def manage_menu(request):
+    """ポートフォリオ管理メニューページ（サイドバー付き）"""
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        profile = None
+    
+    try:
+        github_profile = GitHubProfile.objects.get(profile=profile) if profile else None
+    except GitHubProfile.DoesNotExist:
+        github_profile = None
+    
+    section = request.GET.get('section', 'profile')  # デフォルトはプロフィール
+    
+    # 削除処理
+    delete_id = request.GET.get('delete')
+    if delete_id:
+        if section == 'skills':
+            try:
+                skill = Skill.objects.get(id=delete_id, profile=profile)
+                skill.delete()
+                messages.success(request, 'スキルを削除しました。')
+            except Skill.DoesNotExist:
+                messages.error(request, 'スキルが見つかりませんでした。')
+        elif section == 'experiences':
+            try:
+                experience = Experience.objects.get(id=delete_id, profile=profile)
+                experience.delete()
+                messages.success(request, '経歴を削除しました。')
+            except Experience.DoesNotExist:
+                messages.error(request, '経歴が見つかりませんでした。')
+        elif section == 'projects':
+            try:
+                project = Project.objects.get(id=delete_id, profile=profile)
+                project.delete()
+                messages.success(request, 'プロジェクトを削除しました。')
+            except Project.DoesNotExist:
+                messages.error(request, 'プロジェクトが見つかりませんでした。')
+        return redirect('/portfolio/manage/')
+    
+    # フォーム初期化
+    profile_form = None
+    skill_form = None
+    experience_form = None
+    project_form = None
+    github_form = None
+    
+    # プロフィールセクション
+    if section == 'profile':
+        if request.method == 'POST':
+            if profile:
+                profile_form = ProfileForm(request.POST, request.FILES, instance=profile)
+            else:
+                profile_form = ProfileForm(request.POST, request.FILES)
+                
+            if profile_form.is_valid():
+                profile_instance = profile_form.save(commit=False)
+                profile_instance.user = request.user
+                profile_instance.save()
+                messages.success(request, 'プロフィールが正常に保存されました。')
+                return redirect('portfolio:manage_menu')
+        else:
+            if profile:
+                profile_form = ProfileForm(instance=profile)
+            else:
+                profile_form = ProfileForm()
+    
+    # スキルセクション
+    elif section == 'skills':
+        if not profile:
+            profile = Profile.objects.create(user=request.user)
+        
+        if request.method == 'POST':
+            edit_id = request.POST.get('edit_id')
+            if edit_id:
+                try:
+                    skill = Skill.objects.get(id=edit_id, profile=profile)
+                    skill_form = SkillForm(request.POST, instance=skill)
+                except Skill.DoesNotExist:
+                    skill_form = SkillForm(request.POST)
+            else:
+                skill_form = SkillForm(request.POST)
+            
+            if skill_form.is_valid():
+                skill_instance = skill_form.save(commit=False)
+                skill_instance.profile = profile
+                skill_instance.save()
+                messages.success(request, 'スキルが正常に保存されました。')
+                return redirect('/portfolio/manage/?section=skills')
+        else:
+            skill_form = SkillForm()
+    
+    # 経歴セクション
+    elif section == 'experiences':
+        if not profile:
+            profile = Profile.objects.create(user=request.user)
+        
+        if request.method == 'POST':
+            edit_id = request.POST.get('edit_id')
+            if edit_id:
+                try:
+                    experience = Experience.objects.get(id=edit_id, profile=profile)
+                    experience_form = ExperienceForm(request.POST, instance=experience)
+                except Experience.DoesNotExist:
+                    experience_form = ExperienceForm(request.POST)
+            else:
+                experience_form = ExperienceForm(request.POST)
+            
+            if experience_form.is_valid():
+                experience_instance = experience_form.save(commit=False)
+                experience_instance.profile = profile
+                experience_instance.save()
+                messages.success(request, '経歴が正常に保存されました。')
+                return redirect('/portfolio/manage/?section=experiences')
+        else:
+            experience_form = ExperienceForm()
+    
+    # プロジェクトセクション
+    elif section == 'projects':
+        if not profile:
+            profile = Profile.objects.create(user=request.user)
+        
+        if request.method == 'POST':
+            edit_id = request.POST.get('edit_id')
+            if edit_id:
+                try:
+                    project = Project.objects.get(id=edit_id, profile=profile)
+                    project_form = ProjectForm(request.POST, request.FILES, instance=project)
+                except Project.DoesNotExist:
+                    project_form = ProjectForm(request.POST, request.FILES)
+            else:
+                project_form = ProjectForm(request.POST, request.FILES)
+            
+            if project_form.is_valid():
+                project_instance = project_form.save(commit=False)
+                project_instance.profile = profile
+                project_instance.save()
+                messages.success(request, 'プロジェクトが正常に保存されました。')
+                return redirect('/portfolio/manage/?section=projects')
+        else:
+            project_form = ProjectForm()
+    
+    # GitHubセクション
+    elif section == 'github':
+        if not profile:
+            profile = Profile.objects.create(user=request.user)
+        
+        if request.method == 'POST':
+            if github_profile:
+                github_form = GitHubProfileForm(request.POST, instance=github_profile)
+            else:
+                github_form = GitHubProfileForm(request.POST)
+            
+            if github_form.is_valid():
+                github_instance = github_form.save(commit=False)
+                github_instance.profile = profile
+                github_instance.save()
+                messages.success(request, 'GitHub連携が正常に保存されました。')
+                return redirect('/portfolio/manage/?section=github')
+        else:
+            if github_profile:
+                github_form = GitHubProfileForm(instance=github_profile)
+            else:
+                github_form = GitHubProfileForm()
+    
+    # データ取得
+    skills = Skill.objects.filter(profile=profile).order_by('category', '-experience_years') if profile else []
+    experiences = Experience.objects.filter(profile=profile).order_by('-start_date') if profile else []
+    projects = Project.objects.filter(profile=profile).order_by('-created_date') if profile else []
+    
+    context = {
+        'profile': profile,
+        'github_profile': github_profile,
+        'section': section,
+        'profile_form': profile_form,
+        'skill_form': skill_form,
+        'experience_form': experience_form,
+        'project_form': project_form,
+        'github_form': github_form,
+        'skills': skills,
+        'experiences': experiences,
+        'projects': projects,
+        'skills_count': len(skills),
+        'experiences_count': len(experiences),
+        'projects_count': len(projects),
+    }
+    
+    return render(request, 'portfolio/manage_menu.html', context)
 
 
 @login_required

@@ -1,0 +1,236 @@
+{% load portfolio_extras %}
+<!-- プロジェクト管理セクション -->
+<div class="space-y-6">
+    <!-- プロジェクト追加フォーム -->
+    <div class="card p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">
+            <i class="fas fa-plus mr-2"></i>プロジェクトを追加・編集
+        </h3>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="projects">
+            <input type="hidden" name="edit_id" id="edit_id" value="">
+            
+            <!-- 基本情報 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="{{ project_form.title.id_for_label }}" class="form-label">
+                        <i class="fas fa-rocket mr-2"></i>プロジェクト名
+                    </label>
+                    <input type="text" name="{{ project_form.title.name }}" id="{{ project_form.title.id_for_label }}" 
+                           class="form-input" placeholder="ポートフォリオサイト"
+                           value="{{ project_form.title.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ project_form.github_url.id_for_label }}" class="form-label">
+                        <i class="fab fa-github mr-2"></i>GitHubリポジトリ
+                    </label>
+                    <input type="url" name="{{ project_form.github_url.name }}" id="{{ project_form.github_url.id_for_label }}" 
+                           class="form-input" placeholder="https://github.com/username/repo"
+                           value="{{ project_form.github_url.value|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- URL・デモ -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="{{ project_form.url.id_for_label }}" class="form-label">
+                        <i class="fas fa-external-link-alt mr-2"></i>デモ・本番URL
+                    </label>
+                    <input type="url" name="{{ project_form.url.name }}" id="{{ project_form.url.id_for_label }}" 
+                           class="form-input" placeholder="https://example.com"
+                           value="{{ project_form.url.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ project_form.technologies.id_for_label }}" class="form-label">
+                        <i class="fas fa-code mr-2"></i>使用技術
+                    </label>
+                    <input type="text" name="{{ project_form.technologies.name }}" id="{{ project_form.technologies.id_for_label }}" 
+                           class="form-input" placeholder="Django, React, PostgreSQL"
+                           value="{{ project_form.technologies.value|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- 説明文 -->
+            <div class="form-group">
+                <label for="{{ project_form.description.id_for_label }}" class="form-label">
+                    <i class="fas fa-align-left mr-2"></i>プロジェクト概要
+                </label>
+                <textarea name="{{ project_form.description.name }}" id="{{ project_form.description.id_for_label }}" 
+                          rows="4" class="form-input" 
+                          placeholder="このプロジェクトの概要、特徴、課題解決などを記載してください">{{ project_form.description.value|default:'' }}</textarea>
+            </div>
+            
+            <!-- 画像アップロード -->
+            <div class="form-group">
+                <label for="{{ project_form.image.id_for_label }}" class="form-label">
+                    <i class="fas fa-image mr-2"></i>プロジェクト画像
+                </label>
+                
+                <!-- 現在の画像表示 -->
+                <div id="currentImage" class="mb-4 hidden">
+                    <img id="currentImg" src="" alt="現在の画像" class="w-full max-w-md h-48 object-cover rounded-lg border">
+                    <p class="text-sm text-gray-600 mt-2">現在の画像</p>
+                </div>
+                
+                <!-- プレビューエリア -->
+                <div id="imagePreview" class="mb-4 hidden">
+                    <img id="previewImg" src="" alt="プレビュー" class="w-full max-w-md h-48 object-cover rounded-lg border">
+                    <p class="text-sm text-gray-600 mt-2">新しい画像のプレビュー</p>
+                </div>
+                
+                <input type="file" name="{{ project_form.image.name }}" id="{{ project_form.image.id_for_label }}" 
+                       accept="image/*" class="form-input" onchange="previewImage(this)">
+                <div class="text-sm text-gray-500 mt-1">
+                    推奨サイズ: 800x600px | 対応形式: JPG, PNG, GIF | 最大サイズ: 5MB
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-end space-x-3">
+                <button type="button" onclick="resetForm()" class="btn btn-secondary">
+                    <i class="fas fa-times mr-2"></i>リセット
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i>プロジェクトを追加
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- プロジェクト一覧 -->
+    {% if projects %}
+        <div class="space-y-4">
+            {% for project in projects %}
+            <div class="card p-6 group hover:bg-gray-50">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex-1">
+                        <h4 class="text-lg font-semibold text-gray-900">{{ project.title }}</h4>
+                        <div class="flex items-center space-x-4 mt-2">
+                            {% if project.url %}
+                            <a href="{{ project.url }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">
+                                <i class="fas fa-external-link-alt mr-1"></i>デモを見る
+                            </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" class="text-gray-600 hover:text-gray-800 text-sm">
+                                <i class="fab fa-github mr-1"></i>GitHub
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button onclick="editProject({{ project.id }}, '{{ project.title|escapejs }}', '{{ project.description|escapejs }}', '{{ project.technologies|escapejs }}', '{{ project.github_url|default:''|escapejs }}', '{{ project.url|default:''|escapejs }}', '{% if project.image %}{{ project.image.url }}{% endif %}')" 
+                                class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <a href="?section=projects&delete={{ project.id }}" 
+                           class="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-50"
+                           onclick="return confirm('このプロジェクトを削除してもよろしいですか？');">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {% if project.image %}
+                    <div class="md:col-span-1">
+                        <img src="{{ project.image.url }}" alt="{{ project.name }}" class="w-full h-32 object-cover rounded-lg">
+                    </div>
+                    <div class="md:col-span-2">
+                    {% else %}
+                    <div class="md:col-span-3">
+                    {% endif %}
+                        <p class="text-gray-700 text-sm mb-3">{{ project.description|truncatewords:20 }}</p>
+                        
+                        {% if project.technologies %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for tech in project.technologies|split:"," %}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{{ tech|trim }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card p-6">
+            <div class="text-center py-8">
+                <i class="fas fa-rocket text-gray-400 text-4xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">プロジェクトが登録されていません</h3>
+                <p class="text-gray-600 mb-4">作品・成果物を追加してポートフォリオを充実させましょう</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            preview.classList.remove('hidden');
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.classList.add('hidden');
+    }
+}
+
+function editProject(id, title, description, technologies, githubUrl, url, imageUrl) {
+    // フォームに値を設定
+    document.querySelector('input[name="title"]').value = title;
+    document.querySelector('textarea[name="description"]').value = description || '';
+    document.querySelector('input[name="technologies"]').value = technologies || '';
+    document.querySelector('input[name="github_url"]').value = githubUrl || '';
+    document.querySelector('input[name="url"]').value = url || '';
+    document.querySelector('input[name="edit_id"]').value = id;
+    
+    // 現在の画像を表示
+    const currentImage = document.getElementById('currentImage');
+    const currentImg = document.getElementById('currentImg');
+    if (imageUrl) {
+        currentImg.src = imageUrl;
+        currentImage.classList.remove('hidden');
+    } else {
+        currentImage.classList.add('hidden');
+    }
+    
+    // プレビューを隠す
+    document.getElementById('imagePreview').classList.add('hidden');
+    
+    // ファイル入力をクリア
+    document.querySelector('input[type="file"]').value = '';
+    
+    // ボタンのテキストを変更
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-save mr-2"></i>プロジェクトを更新';
+    
+    // フォームまでスクロール
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetForm() {
+    // フォームをリセット
+    document.querySelector('form').reset();
+    document.querySelector('input[name="edit_id"]').value = '';
+    
+    // 画像表示を隠す
+    document.getElementById('currentImage').classList.add('hidden');
+    document.getElementById('imagePreview').classList.add('hidden');
+    
+    // ボタンを元に戻す
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-plus mr-2"></i>プロジェクトを追加';
+}
+</script>

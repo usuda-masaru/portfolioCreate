@@ -1,0 +1,164 @@
+{% load portfolio_extras %}
+<!-- GitHub連携セクション -->
+<div class="space-y-6">
+    <!-- GitHub連携設定フォーム -->
+    <div class="card p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-6">
+            <i class="fab fa-github mr-2"></i>GitHub連携設定
+        </h3>
+        
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="github">
+            
+            <div class="form-group">
+                <label for="{{ github_form.username.id_for_label }}" class="form-label">
+                    <i class="fab fa-github mr-2"></i>GitHubユーザー名
+                </label>
+                <input type="text" name="{{ github_form.username.name }}" id="{{ github_form.username.id_for_label }}" 
+                       class="form-input" placeholder="your-github-username"
+                       value="{{ github_form.username.value|default:'' }}">
+                <div class="text-sm text-gray-500 mt-1">
+                    GitHub APIから自動的に統計情報を取得します
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fab fa-github mr-2"></i>GitHub連携を保存
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- GitHub統計表示 -->
+    {% if github_profile %}
+    <div class="card p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">
+                <i class="fas fa-chart-bar mr-2"></i>GitHub統計
+            </h3>
+            <button onclick="updateGitHubStats()" class="btn btn-secondary btn-sm" id="updateBtn">
+                <i class="fas fa-sync mr-2"></i>統計を更新
+            </button>
+        </div>
+        
+        <!-- 基本統計 -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-lg text-center">
+                <i class="fas fa-code-branch text-blue-600 text-2xl mb-2"></i>
+                <div class="text-2xl font-bold text-blue-800">{{ github_profile.repositories_count }}</div>
+                <div class="text-sm text-blue-600">リポジトリ</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg text-center">
+                <i class="fas fa-users text-green-600 text-2xl mb-2"></i>
+                <div class="text-2xl font-bold text-green-800">{{ github_profile.followers_count }}</div>
+                <div class="text-sm text-green-600">フォロワー</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg text-center">
+                <i class="fas fa-user-friends text-purple-600 text-2xl mb-2"></i>
+                <div class="text-2xl font-bold text-purple-800">{{ github_profile.following_count }}</div>
+                <div class="text-sm text-purple-600">フォロー中</div>
+            </div>
+            <div class="bg-orange-50 p-4 rounded-lg text-center">
+                <i class="fas fa-file-code text-orange-600 text-2xl mb-2"></i>
+                <div class="text-2xl font-bold text-orange-800">{{ github_profile.gists_count }}</div>
+                <div class="text-sm text-orange-600">Gists</div>
+            </div>
+        </div>
+        
+        <!-- 言語統計 -->
+        {% if github_profile.language_stats %}
+        <div class="mb-6">
+            <h4 class="text-md font-semibold text-gray-800 mb-3">
+                <i class="fas fa-code mr-2"></i>使用言語統計
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for language, stats in github_profile.language_stats.items %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span class="font-medium text-gray-700">{{ language }}</span>
+                    <div class="flex items-center space-x-2">
+                        <div class="w-16 bg-gray-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ stats.percentage }}%"></div>
+                        </div>
+                        <span class="text-sm text-gray-600">{{ stats.percentage }}%</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- GitHubプロフィール情報 -->
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <div class="flex items-center space-x-4">
+                <i class="fab fa-github text-gray-600 text-3xl"></i>
+                <div>
+                    <h4 class="font-semibold text-gray-800">
+                        {{ github_profile.username }}
+                    </h4>
+                    <p class="text-sm text-gray-600">@{{ github_profile.username }}</p>
+                    {% if github_profile.github_bio %}
+                    <p class="text-sm text-gray-700 mt-1">{{ github_profile.github_bio }}</p>
+                    {% endif %}
+                    {% if github_profile.github_location %}
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-map-marker-alt mr-1"></i>{{ github_profile.github_location }}
+                    </p>
+                    {% endif %}
+                    {% if github_profile.created_at %}
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-calendar mr-1"></i>{{ github_profile.created_at|date:"Y年m月" }}より参加
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card p-6">
+        <div class="text-center py-8">
+            <i class="fab fa-github text-gray-400 text-4xl mb-4"></i>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">GitHub連携が設定されていません</h3>
+            <p class="text-gray-600 mb-4">GitHubアカウントを連携して開発活動を自動反映させましょう</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function updateGitHubStats() {
+    const updateBtn = document.getElementById('updateBtn');
+    const originalHtml = updateBtn.innerHTML;
+    
+    // ボタンを無効化
+    updateBtn.disabled = true;
+    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>更新中...';
+    
+    // GitHub統計更新のAPIを呼び出し
+    fetch('{% url "portfolio:update_github" profile.id %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // ページをリロード
+            window.location.reload();
+        } else {
+            alert('統計の更新に失敗しました: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('エラーが発生しました: ' + error.message);
+    })
+    .finally(() => {
+        // ボタンを元に戻す
+        updateBtn.disabled = false;
+        updateBtn.innerHTML = originalHtml;
+    });
+}
+</script>

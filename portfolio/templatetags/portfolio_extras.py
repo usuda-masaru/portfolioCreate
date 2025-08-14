@@ -1,4 +1,5 @@
 from django import template
+import markdown
 
 register = template.Library()
 
@@ -77,3 +78,17 @@ def trim(value):
     if value is None:
         return ''
     return str(value).strip()
+
+@register.filter
+def markdown_to_html(value):
+    """Convert markdown text to HTML"""
+    if value is None:
+        return ''
+    # Configure markdown with extensions for better formatting
+    md = markdown.Markdown(extensions=[
+        'markdown.extensions.fenced_code',
+        'markdown.extensions.tables',
+        'markdown.extensions.nl2br',
+        'markdown.extensions.sane_lists'
+    ])
+    return md.convert(str(value))
