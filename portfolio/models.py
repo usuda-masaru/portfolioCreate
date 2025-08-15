@@ -2,6 +2,50 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 import uuid
+import os
+import re
+from django.utils.text import slugify
+
+
+def safe_upload_to_projects(instance, filename):
+    """プロジェクト画像の安全なアップロードパスを生成"""
+    # ファイル名から拡張子を取得
+    name, ext = os.path.splitext(filename)
+    
+    # ファイル名をサニタイズ（英数字とハイフン、アンダースコアのみ）
+    safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', name)
+    safe_name = re.sub(r'_+', '_', safe_name)  # 連続するアンダースコアを1つに
+    safe_name = safe_name.strip('_')  # 先頭末尾のアンダースコアを削除
+    
+    # 空になった場合はデフォルト名を使用
+    if not safe_name:
+        safe_name = 'project'
+    
+    # UUIDを追加してファイル名の重複を防ぐ
+    unique_id = str(uuid.uuid4())[:8]
+    safe_filename = f"{safe_name}_{unique_id}{ext}"
+    
+    return f'projects/{safe_filename}'
+
+
+def safe_upload_to_avatars(instance, filename):
+    """アバター画像の安全なアップロードパスを生成"""
+    # ファイル名から拡張子を取得
+    name, ext = os.path.splitext(filename)
+    
+    # ファイル名をサニタイズ
+    safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', name)
+    safe_name = re.sub(r'_+', '_', safe_name)
+    safe_name = safe_name.strip('_')
+    
+    if not safe_name:
+        safe_name = 'avatar'
+    
+    # UUIDを追加
+    unique_id = str(uuid.uuid4())[:8]
+    safe_filename = f"{safe_name}_{unique_id}{ext}"
+    
+    return f'avatars/{safe_filename}'
 
 
 class Profile(models.Model):
@@ -27,7 +71,7 @@ class Profile(models.Model):
     website = models.URLField(blank=True, verbose_name="ウェブサイト")
     twitter = models.URLField(blank=True, verbose_name="Twitter")
     qiita = models.URLField(blank=True, verbose_name="Qiita")
-    avatar = models.ImageField(upload_to='avatars/', blank=True, verbose_name="プロフィール画像")
+    avatar = models.ImageField(upload_to=safe_upload_to_avatars, blank=True, verbose_name="プロフィール画像")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -72,14 +116,16 @@ class Skill(models.Model):
     name = models.CharField(max_length=100, verbose_name="スキル名")
     experience_years = models.IntegerField(verbose_name="経験年数")
     description = models.TextField(blank=True, verbose_name="詳細説明")
+    is_featured = models.BooleanField(default=False, verbose_name="得意スキル")
     
     class Meta:
         verbose_name = "スキル"
         verbose_name_plural = "スキル"
-        ordering = ['category', '-experience_years']
+        ordering = ['category', '-is_featured', '-experience_years']
     
     def __str__(self):
-        return f"{self.name} ({self.experience_years}年)"
+        featured_mark = "⭐ " if self.is_featured else ""
+        return f"{featured_mark}{self.name} ({self.experience_years}年)"
 
 
 class Experience(models.Model):
@@ -133,7 +179,7 @@ class Project(models.Model):
     title = models.CharField(max_length=200, verbose_name="プロジェクト名")
     project_type = models.CharField(max_length=20, choices=PROJECT_TYPE_CHOICES, verbose_name="種類")
     description = models.TextField(verbose_name="説明")
-    image = models.ImageField(upload_to='projects/', verbose_name="プロジェクト画像")
+    image = models.ImageField(upload_to=safe_upload_to_projects, verbose_name="プロジェクト画像")
     url = models.URLField(blank=True, verbose_name="URL")
     github_url = models.URLField(blank=True, verbose_name="GitHub URL")
     technologies = models.TextField(verbose_name="使用技術")

@@ -24,6 +24,20 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="{{ project_form.project_type.id_for_label }}" class="form-label">
+                        <i class="fas fa-cog mr-2"></i>プロジェクト種類
+                    </label>
+                    <select name="{{ project_form.project_type.name }}" id="{{ project_form.project_type.id_for_label }}" class="form-input">
+                        {% for choice in project_form.project_type.field.choices %}
+                        <option value="{{ choice.0 }}" {% if choice.0 == project_form.project_type.value %}selected{% endif %}>{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <!-- GitHub・URL -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
                     <label for="{{ project_form.github_url.id_for_label }}" class="form-label">
                         <i class="fab fa-github mr-2"></i>GitHubリポジトリ
                     </label>
@@ -31,10 +45,7 @@
                            class="form-input" placeholder="https://github.com/username/repo"
                            value="{{ project_form.github_url.value|default:'' }}">
                 </div>
-            </div>
-            
-            <!-- URL・デモ -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
                 <div class="form-group">
                     <label for="{{ project_form.url.id_for_label }}" class="form-label">
                         <i class="fas fa-external-link-alt mr-2"></i>デモ・本番URL
@@ -43,7 +54,10 @@
                            class="form-input" placeholder="https://example.com"
                            value="{{ project_form.url.value|default:'' }}">
                 </div>
-                
+            </div>
+            
+            <!-- 技術・作成日 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="form-group">
                     <label for="{{ project_form.technologies.id_for_label }}" class="form-label">
                         <i class="fas fa-code mr-2"></i>使用技術
@@ -51,6 +65,26 @@
                     <input type="text" name="{{ project_form.technologies.name }}" id="{{ project_form.technologies.id_for_label }}" 
                            class="form-input" placeholder="Django, React, PostgreSQL"
                            value="{{ project_form.technologies.value|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ project_form.created_date.id_for_label }}" class="form-label">
+                        <i class="fas fa-calendar mr-2"></i>作成日
+                    </label>
+                    <input type="date" name="{{ project_form.created_date.name }}" id="{{ project_form.created_date.id_for_label }}" 
+                           class="form-input" value="{{ project_form.created_date.value|default:'' }}">
+                </div>
+            </div>
+            
+            <!-- 注目プロジェクト -->
+            <div class="form-group">
+                <div class="flex items-center">
+                    <input type="checkbox" name="{{ project_form.is_featured.name }}" id="{{ project_form.is_featured.id_for_label }}" 
+                           class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mr-3"
+                           {% if project_form.is_featured.value %}checked{% endif %}>
+                    <label for="{{ project_form.is_featured.id_for_label }}" class="form-label text-blue-600">
+                        <i class="fas fa-star mr-2"></i>注目プロジェクト
+                    </label>
                 </div>
             </div>
             
@@ -72,20 +106,20 @@
                 
                 <!-- 現在の画像表示 -->
                 <div id="currentImage" class="mb-4 hidden">
-                    <img id="currentImg" src="" alt="現在の画像" class="w-full max-w-md h-48 object-cover rounded-lg border">
+                    <img id="currentImg" src="" alt="現在の画像" class="w-full max-w-md aspect-video object-cover rounded-lg border">
                     <p class="text-sm text-gray-600 mt-2">現在の画像</p>
                 </div>
                 
                 <!-- プレビューエリア -->
                 <div id="imagePreview" class="mb-4 hidden">
-                    <img id="previewImg" src="" alt="プレビュー" class="w-full max-w-md h-48 object-cover rounded-lg border">
+                    <img id="previewImg" src="" alt="プレビュー" class="w-full max-w-md aspect-video object-cover rounded-lg border">
                     <p class="text-sm text-gray-600 mt-2">新しい画像のプレビュー</p>
                 </div>
                 
                 <input type="file" name="{{ project_form.image.name }}" id="{{ project_form.image.id_for_label }}" 
                        accept="image/*" class="form-input" onchange="previewImage(this)">
                 <div class="text-sm text-gray-500 mt-1">
-                    推奨サイズ: 800x600px | 対応形式: JPG, PNG, GIF | 最大サイズ: 5MB
+                    推奨サイズ: 16:9アスペクト比（例：1920x1080px、1280x720px） | 対応形式: JPG, PNG, GIF | 最大サイズ: 5MB
                 </div>
             </div>
             
@@ -122,7 +156,7 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button onclick="editProject({{ project.id }}, '{{ project.title|escapejs }}', '{{ project.description|escapejs }}', '{{ project.technologies|escapejs }}', '{{ project.github_url|default:''|escapejs }}', '{{ project.url|default:''|escapejs }}', '{% if project.image %}{{ project.image.url }}{% endif %}')" 
+                        <button onclick="editProject({{ project.id }}, '{{ project.title|escapejs }}', '{{ project.project_type }}', '{{ project.description|escapejs }}', '{{ project.technologies|escapejs }}', '{{ project.github_url|default:''|escapejs }}', '{{ project.url|default:''|escapejs }}', '{{ project.created_date|date:'Y-m-d' }}', {% if project.is_featured %}true{% else %}false{% endif %}, '{% if project.image %}{{ project.image.url }}{% endif %}')" 
                                 class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -137,7 +171,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {% if project.image %}
                     <div class="md:col-span-1">
-                        <img src="{{ project.image.url }}" alt="{{ project.name }}" class="w-full h-32 object-cover rounded-lg">
+                        <img src="{{ project.image.url }}" alt="{{ project.name }}" class="w-full aspect-video object-cover rounded-lg">
                     </div>
                     <div class="md:col-span-2">
                     {% else %}
@@ -187,13 +221,16 @@ function previewImage(input) {
     }
 }
 
-function editProject(id, title, description, technologies, githubUrl, url, imageUrl) {
+function editProject(id, title, projectType, description, technologies, githubUrl, url, createdDate, isFeatured, imageUrl) {
     // フォームに値を設定
     document.querySelector('input[name="title"]').value = title;
+    document.querySelector('select[name="project_type"]').value = projectType;
     document.querySelector('textarea[name="description"]').value = description || '';
     document.querySelector('input[name="technologies"]').value = technologies || '';
     document.querySelector('input[name="github_url"]').value = githubUrl || '';
     document.querySelector('input[name="url"]').value = url || '';
+    document.querySelector('input[name="created_date"]').value = createdDate || '';
+    document.querySelector('input[name="is_featured"]').checked = isFeatured;
     document.querySelector('input[name="edit_id"]').value = id;
     
     // 現在の画像を表示

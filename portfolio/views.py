@@ -251,7 +251,7 @@ def manage_menu(request):
                 messages.success(request, 'プロジェクトを削除しました。')
             except Project.DoesNotExist:
                 messages.error(request, 'プロジェクトが見つかりませんでした。')
-        return redirect('/portfolio/manage/')
+        return redirect(f'/portfolio/manage/?section={section}')
     
     # フォーム初期化
     profile_form = None

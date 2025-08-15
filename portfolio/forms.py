@@ -90,7 +90,7 @@ class ProfileForm(forms.ModelForm):
 class SkillForm(forms.ModelForm):
     class Meta:
         model = Skill
-        fields = ['category', 'name', 'experience_years', 'description']
+        fields = ['category', 'name', 'experience_years', 'is_featured', 'description']
         widgets = {
             'category': forms.Select(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300'
@@ -103,6 +103,9 @@ class SkillForm(forms.ModelForm):
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
                 'placeholder': '経験年数',
                 'min': 0
+            }),
+            'is_featured': forms.CheckboxInput(attrs={
+                'class': 'w-5 h-5 text-orange-600 bg-gray-800 border-gray-600 rounded focus:ring-orange-500 focus:ring-2'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
