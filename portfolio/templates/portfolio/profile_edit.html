@@ -6,8 +6,8 @@
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a href="{% url 'portfolio:dashboard' %}">
-            <i class="fas fa-home"></i> ダッシュボード
+        <a href="{% url 'portfolio:manage_menu' %}">
+            <i class="fas fa-home"></i> 管理メニュー
         </a>
         <i class="fas fa-chevron-right"></i>
         <a href="{% url 'portfolio:manage_menu' %}">
@@ -25,7 +25,7 @@
                 <p class="page-subtitle">基本情報を入力・更新してください</p>
             </div>
             <div>
-                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     戻る
                 </a>
@@ -176,7 +176,7 @@
             
             <!-- Submit Button -->
             <div class="flex justify-end space-x-4">
-                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
                     <i class="fas fa-times"></i>
                     キャンセル
                 </a>

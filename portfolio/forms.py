@@ -115,7 +115,13 @@ class SkillForm(forms.ModelForm):
 class ExperienceForm(forms.ModelForm):
     class Meta:
         model = Experience
-        fields = ['title', 'start_date', 'end_date', 'is_current', 'description', 'role', 'team_size', 'technologies', 'processes', 'achievements']
+        fields = [
+            'title', 'start_date', 'end_date', 'is_current', 'role', 'team_size',
+            'programming_languages', 'databases', 'server_os', 'frameworks_tools',
+            'process_requirement', 'process_basic_design', 'process_detail_design', 
+            'process_implementation', 'process_testing', 'process_maintenance',
+            'business_content', 'responsibilities', 'achievements_learnings'
+        ]
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
@@ -132,11 +138,6 @@ class ExperienceForm(forms.ModelForm):
             'is_current': forms.CheckboxInput(attrs={
                 'class': 'w-5 h-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500 focus:ring-2'
             }),
-            'description': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '案件内容',
-                'rows': 4
-            }),
             'role': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
                 'placeholder': '役割'
@@ -146,18 +147,56 @@ class ExperienceForm(forms.ModelForm):
                 'placeholder': 'チーム規模',
                 'min': 1
             }),
-            'technologies': forms.Textarea(attrs={
+            # 使用技術
+            'programming_languages': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '使用技術',
-                'rows': 3
+                'placeholder': 'Java, Python, JavaScript'
             }),
-            'processes': forms.TextInput(attrs={
+            'databases': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '担当工程'
+                'placeholder': 'MySQL, PostgreSQL, Oracle'
             }),
-            'achievements': forms.Textarea(attrs={
+            'server_os': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '成果・実績',
+                'placeholder': 'Linux, Windows Server, CentOS'
+            }),
+            'frameworks_tools': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': 'Spring, Django, Docker, AWS'
+            }),
+            # 担当工程（チェックボックス）
+            'process_requirement': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            'process_basic_design': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            'process_detail_design': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            'process_implementation': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            'process_testing': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            'process_maintenance': forms.CheckboxInput(attrs={
+                'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
+            }),
+            # 業務内容・詳細
+            'business_content': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': '業務内容を記載（Markdown記法対応）',
+                'rows': 4
+            }),
+            'responsibilities': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': '担当業務を記載（Markdown記法対応）',
+                'rows': 4
+            }),
+            'achievements_learnings': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
+                'placeholder': '成果・学びを記載（Markdown記法対応）',
                 'rows': 3
             })
         }

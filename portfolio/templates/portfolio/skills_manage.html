@@ -7,8 +7,8 @@
 <div class="max-w-6xl mx-auto">
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a href="{% url 'portfolio:dashboard' %}">
-            <i class="fas fa-home"></i> ダッシュボード
+        <a href="{% url 'portfolio:manage_menu' %}">
+            <i class="fas fa-home"></i> 管理メニュー
         </a>
         <i class="fas fa-chevron-right"></i>
         <a href="{% url 'portfolio:manage_menu' %}">
@@ -26,7 +26,7 @@
                 <p class="page-subtitle">技術スキルを追加・管理してください</p>
             </div>
             <div>
-                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     戻る
                 </a>
@@ -147,8 +147,8 @@
     
     <!-- Navigation -->
     <div class="flex justify-between items-center mt-8">
-        <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
-            <i class="fas fa-arrow-left mr-2"></i>ダッシュボード
+        <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
+            <i class="fas fa-arrow-left mr-2"></i>管理メニュー
         </a>
         
         <a href="{% url 'portfolio:experiences_manage' %}" class="btn-primary">

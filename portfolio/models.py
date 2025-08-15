@@ -83,26 +83,32 @@ class Skill(models.Model):
 
 
 class Experience(models.Model):
-    PROCESS_CHOICES = [
-        ('requirement', '要件定義'),
-        ('design', '設計'),
-        ('development', '開発'),
-        ('testing', 'テスト'),
-        ('deployment', 'デプロイ'),
-        ('maintenance', '保守・運用'),
-    ]
-    
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='experiences')
     title = models.CharField(max_length=200, verbose_name="案件名")
     start_date = models.DateField(verbose_name="開始日")
     end_date = models.DateField(null=True, blank=True, verbose_name="終了日")
     is_current = models.BooleanField(default=False, verbose_name="現在も継続中")
-    description = models.TextField(verbose_name="案件内容")
     role = models.CharField(max_length=100, verbose_name="役割")
     team_size = models.IntegerField(verbose_name="チーム規模")
-    technologies = models.TextField(verbose_name="使用技術")
-    processes = models.CharField(max_length=200, verbose_name="担当工程")
-    achievements = models.TextField(blank=True, verbose_name="成果・実績")
+    
+    # 使用技術（4つのカテゴリ）
+    programming_languages = models.TextField(blank=True, verbose_name="使用言語")
+    databases = models.TextField(blank=True, verbose_name="DB")
+    server_os = models.TextField(blank=True, verbose_name="サーバOS")
+    frameworks_tools = models.TextField(blank=True, verbose_name="FW・MWツール等")
+    
+    # 担当工程（チェックボックス）
+    process_requirement = models.BooleanField(default=False, verbose_name="要件定義")
+    process_basic_design = models.BooleanField(default=False, verbose_name="基本設計")
+    process_detail_design = models.BooleanField(default=False, verbose_name="詳細設計")
+    process_implementation = models.BooleanField(default=False, verbose_name="実装")
+    process_testing = models.BooleanField(default=False, verbose_name="テスト")
+    process_maintenance = models.BooleanField(default=False, verbose_name="保守運用")
+    
+    # 業務内容・詳細（3つのフィールド）
+    business_content = models.TextField(default='', verbose_name="業務内容", help_text="Markdown記法対応")
+    responsibilities = models.TextField(default='', verbose_name="担当業務", help_text="Markdown記法対応")
+    achievements_learnings = models.TextField(blank=True, default='', verbose_name="成果・学び", help_text="Markdown記法対応")
     
     class Meta:
         verbose_name = "経歴"

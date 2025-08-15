@@ -6,8 +6,8 @@
 <div class="max-w-4xl mx-auto">
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-        <a href="{% url 'portfolio:dashboard' %}">
-            <i class="fas fa-home"></i> ダッシュボード
+        <a href="{% url 'portfolio:manage_menu' %}">
+            <i class="fas fa-home"></i> 管理メニュー
         </a>
         <i class="fas fa-chevron-right"></i>
         <a href="{% url 'portfolio:manage_menu' %}">
@@ -25,7 +25,7 @@
                 <p class="page-subtitle">GitHubプロフィールを連携してください</p>
             </div>
             <div>
-                <a href="{% url 'portfolio:dashboard' %}" class="btn-secondary">
+                <a href="{% url 'portfolio:manage_menu' %}" class="btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     戻る
                 </a>
@@ -129,8 +129,8 @@
             <i class="fas fa-arrow-left mr-2"></i>プロジェクト管理
         </a>
         
-        <a href="{% url 'portfolio:dashboard' %}" class="btn-primary">
-            完了: ダッシュボード<i class="fas fa-check ml-2"></i>
+        <a href="{% url 'portfolio:manage_menu' %}" class="btn-primary">
+            完了: 管理メニュー<i class="fas fa-check ml-2"></i>
         </a>
     </div>
 </div>

@@ -291,12 +291,12 @@
         <div class="container">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <a href="{% url 'portfolio:dashboard' %}" class="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors">Portfolio Manager</a>
+                    <a href="{% url 'portfolio:manage_menu' %}" class="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors">Portfolio Manager</a>
                 </div>
                 
                 <div class="flex items-center space-x-4">
-                    <a href="{% url 'portfolio:dashboard' %}" class="text-gray-600 hover:text-gray-900 text-sm">
-                        <i class="fas fa-tachometer-alt mr-1"></i>ダッシュボード
+                    <a href="{% url 'portfolio:manage_menu' %}" class="text-gray-600 hover:text-gray-900 text-sm">
+                        <i class="fas fa-tachometer-alt mr-1"></i>管理メニュー
                     </a>
                     {% if user.is_authenticated %}
                         <div class="flex items-center space-x-2">

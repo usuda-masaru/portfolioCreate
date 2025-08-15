@@ -213,23 +213,6 @@ def custom_signup(request):
 
 
 @login_required
-def dashboard(request):
-    try:
-        profile = Profile.objects.get(user=request.user)
-    except Profile.DoesNotExist:
-        profile = None
-    
-    context = {
-        'profile': profile,
-        'skills_count': Skill.objects.filter(profile=profile).count() if profile else 0,
-        'experiences_count': Experience.objects.filter(profile=profile).count() if profile else 0,
-        'projects_count': Project.objects.filter(profile=profile).count() if profile else 0,
-    }
-    
-    return render(request, 'portfolio/dashboard.html', context)
-
-
-@login_required
 def manage_menu(request):
     """ポートフォリオ管理メニューページ（サイドバー付き）"""
     try:
@@ -434,7 +417,7 @@ def profile_edit(request):
             profile.user = request.user
             profile.save()
             messages.success(request, 'プロフィールが保存されました。')
-            return redirect('portfolio:dashboard')
+            return redirect('portfolio:manage_menu')
     else:
         form = ProfileForm(instance=profile)
     

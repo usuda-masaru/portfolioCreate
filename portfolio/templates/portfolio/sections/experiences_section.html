@@ -72,45 +72,116 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="{{ experience_form.processes.id_for_label }}" class="form-label">
-                        <i class="fas fa-tasks mr-2"></i>担当工程
+                    <label for="{{ experience_form.role.id_for_label }}" class="form-label">
+                        <i class="fas fa-user-tie mr-2"></i>役割
                     </label>
-                    <input type="text" name="{{ experience_form.processes.name }}" id="{{ experience_form.processes.id_for_label }}" 
-                           class="form-input" placeholder="要件定義, 設計, 開発"
-                           value="{{ experience_form.processes.value|default:'' }}">
+                    <input type="text" name="{{ experience_form.role.name }}" id="{{ experience_form.role.id_for_label }}" 
+                           class="form-input" placeholder="リードエンジニア"
+                           value="{{ experience_form.role.value|default:'' }}">
                 </div>
             </div>
             
-            <!-- 技術 -->
+            <!-- 使用技術（4つのカテゴリ） -->
             <div class="form-group">
-                <label for="{{ experience_form.technologies.id_for_label }}" class="form-label">
+                <label class="form-label">
                     <i class="fas fa-code mr-2"></i>使用技術
                 </label>
-                <input type="text" name="{{ experience_form.technologies.name }}" id="{{ experience_form.technologies.id_for_label }}" 
-                       class="form-input" placeholder="Python, Django, React, PostgreSQL"
-                       value="{{ experience_form.technologies.value|default:'' }}">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ experience_form.programming_languages.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">使用言語</label>
+                        <input type="text" name="{{ experience_form.programming_languages.name }}" id="{{ experience_form.programming_languages.id_for_label }}" 
+                               class="form-input" placeholder="Java, Python, JavaScript"
+                               value="{{ experience_form.programming_languages.value|default:'' }}">
+                    </div>
+                    <div>
+                        <label for="{{ experience_form.databases.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">DB</label>
+                        <input type="text" name="{{ experience_form.databases.name }}" id="{{ experience_form.databases.id_for_label }}" 
+                               class="form-input" placeholder="MySQL, PostgreSQL, Oracle"
+                               value="{{ experience_form.databases.value|default:'' }}">
+                    </div>
+                    <div>
+                        <label for="{{ experience_form.server_os.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">サーバOS</label>
+                        <input type="text" name="{{ experience_form.server_os.name }}" id="{{ experience_form.server_os.id_for_label }}" 
+                               class="form-input" placeholder="Linux, Windows Server, CentOS"
+                               value="{{ experience_form.server_os.value|default:'' }}">
+                    </div>
+                    <div>
+                        <label for="{{ experience_form.frameworks_tools.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">FW・MWツール等</label>
+                        <input type="text" name="{{ experience_form.frameworks_tools.name }}" id="{{ experience_form.frameworks_tools.id_for_label }}" 
+                               class="form-input" placeholder="Spring, Django, Docker, AWS"
+                               value="{{ experience_form.frameworks_tools.value|default:'' }}">
+                    </div>
+                </div>
             </div>
             
-            <!-- 詳細説明 (Markdown対応) -->
+            <!-- 担当工程（チェックボックス） -->
             <div class="form-group">
-                <label for="{{ experience_form.description.id_for_label }}" class="form-label">
-                    <i class="fas fa-align-left mr-2"></i>案件内容・詳細説明
-                    <span class="text-sm text-gray-500">(Markdown記法対応)</span>
+                <label class="form-label">
+                    <i class="fas fa-tasks mr-2"></i>担当工程
                 </label>
-                <textarea name="{{ experience_form.description.name }}" id="{{ experience_form.description.id_for_label }}" 
-                          rows="6" class="form-input" 
-                          placeholder="## 概要&#10;案件の概要を記載&#10;&#10;## 担当業務&#10;- 要件定義&#10;- 設計&#10;- 開発">{{ experience_form.description.value|default:'' }}</textarea>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_requirement.name }}" id="{{ experience_form.process_requirement.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_requirement.value %}checked{% endif %}>
+                        要件定義
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_basic_design.name }}" id="{{ experience_form.process_basic_design.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_basic_design.value %}checked{% endif %}>
+                        基本設計
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_detail_design.name }}" id="{{ experience_form.process_detail_design.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_detail_design.value %}checked{% endif %}>
+                        詳細設計
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_implementation.name }}" id="{{ experience_form.process_implementation.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_implementation.value %}checked{% endif %}>
+                        実装
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_testing.name }}" id="{{ experience_form.process_testing.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_testing.value %}checked{% endif %}>
+                        テスト
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="{{ experience_form.process_maintenance.name }}" id="{{ experience_form.process_maintenance.id_for_label }}" 
+                               class="mr-2" {% if experience_form.process_maintenance.value %}checked{% endif %}>
+                        保守運用
+                    </label>
+                </div>
             </div>
             
-            <!-- 成果・実績 -->
+            <!-- 業務内容・詳細（3つのフィールド） -->
             <div class="form-group">
-                <label for="{{ experience_form.achievements.id_for_label }}" class="form-label">
-                    <i class="fas fa-trophy mr-2"></i>成果・実績
+                <label for="{{ experience_form.business_content.id_for_label }}" class="form-label">
+                    <i class="fas fa-building mr-2"></i>業務内容
                     <span class="text-sm text-gray-500">(Markdown記法対応)</span>
                 </label>
-                <textarea name="{{ experience_form.achievements.name }}" id="{{ experience_form.achievements.id_for_label }}" 
+                <textarea name="{{ experience_form.business_content.name }}" id="{{ experience_form.business_content.id_for_label }}" 
+                          rows="4" class="form-input" 
+                          placeholder="業務内容を記載（Markdown記法対応）">{{ experience_form.business_content.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ experience_form.responsibilities.id_for_label }}" class="form-label">
+                    <i class="fas fa-user-check mr-2"></i>担当業務
+                    <span class="text-sm text-gray-500">(Markdown記法対応)</span>
+                </label>
+                <textarea name="{{ experience_form.responsibilities.name }}" id="{{ experience_form.responsibilities.id_for_label }}" 
                           rows="4" class="form-input"
-                          placeholder="- パフォーマンス向上（30%改善）&#10;- チーム生産性向上&#10;- 新機能リリース">{{ experience_form.achievements.value|default:'' }}</textarea>
+                          placeholder="担当業務を記載（Markdown記法対応）">{{ experience_form.responsibilities.value|default:'' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ experience_form.achievements_learnings.id_for_label }}" class="form-label">
+                    <i class="fas fa-trophy mr-2"></i>成果・学び
+                    <span class="text-sm text-gray-500">(Markdown記法対応)</span>
+                </label>
+                <textarea name="{{ experience_form.achievements_learnings.name }}" id="{{ experience_form.achievements_learnings.id_for_label }}" 
+                          rows="3" class="form-input"
+                          placeholder="成果・学びを記載（Markdown記法対応）">{{ experience_form.achievements_learnings.value|default:'' }}</textarea>
             </div>
             
             <div class="flex items-center justify-end">
@@ -125,7 +196,27 @@
     {% if experiences %}
         <div class="space-y-4">
             {% for experience in experiences %}
-            <div class="card p-6 group hover:bg-gray-50">
+            <div class="card p-6 group hover:bg-gray-50" 
+                 data-experience-id="{{ experience.id }}"
+                 data-title="{{ experience.title }}"
+                 data-start-date="{{ experience.start_date|date:'Y-m-d' }}"
+                 data-end-date="{{ experience.end_date|date:'Y-m-d'|default:'' }}"
+                 data-is-current="{{ experience.is_current|yesno:'true,false' }}"
+                 data-role="{{ experience.role }}"
+                 data-team-size="{{ experience.team_size }}"
+                 data-programming-languages="{{ experience.programming_languages }}"
+                 data-databases="{{ experience.databases }}"
+                 data-server-os="{{ experience.server_os }}"
+                 data-frameworks-tools="{{ experience.frameworks_tools }}"
+                 data-process-requirement="{{ experience.process_requirement|yesno:'true,false' }}"
+                 data-process-basic-design="{{ experience.process_basic_design|yesno:'true,false' }}"
+                 data-process-detail-design="{{ experience.process_detail_design|yesno:'true,false' }}"
+                 data-process-implementation="{{ experience.process_implementation|yesno:'true,false' }}"
+                 data-process-testing="{{ experience.process_testing|yesno:'true,false' }}"
+                 data-process-maintenance="{{ experience.process_maintenance|yesno:'true,false' }}"
+                 data-business-content="{{ experience.business_content }}"
+                 data-responsibilities="{{ experience.responsibilities }}"
+                 data-achievements-learnings="{{ experience.achievements_learnings }}">
                 <div class="flex items-start justify-between mb-4">
                     <div class="flex-1">
                         <h4 class="text-lg font-semibold text-gray-900">{{ experience.title }}</h4>
@@ -141,7 +232,7 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <button onclick="editExperience({{ experience.id }}, '{{ experience.title|escapejs }}', '{{ experience.start_date|date:'Y-m-d' }}', '{{ experience.end_date|date:'Y-m-d'|default:'' }}', {{ experience.is_current|yesno:'true,false' }}, '{{ experience.description|escapejs }}', '{{ experience.role|escapejs }}', {{ experience.team_size|default:'null' }}, '{{ experience.technologies|escapejs }}', '{{ experience.processes|escapejs }}', '{{ experience.achievements|escapejs }}')" 
+                        <button onclick="editExperience({{ experience.id }})" 
                                 class="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-50">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -160,23 +251,65 @@
                     </div>
                     <div class="flex items-center text-sm text-gray-600">
                         <i class="fas fa-tasks mr-2"></i>
-                        {{ experience.processes }}
+                        担当工程: 
+                        {% if experience.process_requirement %}要件定義{% endif %}
+                        {% if experience.process_basic_design %}{% if experience.process_requirement %}, {% endif %}基本設計{% endif %}
+                        {% if experience.process_detail_design %}{% if experience.process_requirement or experience.process_basic_design %}, {% endif %}詳細設計{% endif %}
+                        {% if experience.process_implementation %}{% if experience.process_requirement or experience.process_basic_design or experience.process_detail_design %}, {% endif %}実装{% endif %}
+                        {% if experience.process_testing %}{% if experience.process_requirement or experience.process_basic_design or experience.process_detail_design or experience.process_implementation %}, {% endif %}テスト{% endif %}
+                        {% if experience.process_maintenance %}{% if experience.process_requirement or experience.process_basic_design or experience.process_detail_design or experience.process_implementation or experience.process_testing %}, {% endif %}保守運用{% endif %}
                     </div>
                 </div>
                 
-                {% if experience.technologies %}
-                <div class="mb-4">
-                    <h5 class="text-sm font-medium text-gray-700 mb-2">使用技術:</h5>
-                    <div class="flex flex-wrap gap-2">
-                        {% for tech in experience.technologies|split:"," %}
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{{ tech|trim }}</span>
-                        {% endfor %}
+                <!-- 使用技術（4つのカテゴリ） -->
+                <div class="mb-4 space-y-2">
+                    {% if experience.programming_languages %}
+                    <div class="text-sm">
+                        <span class="font-medium text-gray-700">使用言語:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            {% for lang in experience.programming_languages|split:"," %}
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">{{ lang|trim }}</span>
+                            {% endfor %}
+                        </div>
                     </div>
+                    {% endif %}
+                    
+                    {% if experience.databases %}
+                    <div class="text-sm">
+                        <span class="font-medium text-gray-700">DB:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            {% for db in experience.databases|split:"," %}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">{{ db|trim }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if experience.server_os %}
+                    <div class="text-sm">
+                        <span class="font-medium text-gray-700">サーバOS:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            {% for os in experience.server_os|split:"," %}
+                            <span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">{{ os|trim }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if experience.frameworks_tools %}
+                    <div class="text-sm">
+                        <span class="font-medium text-gray-700">FW・MWツール等:</span>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            {% for tool in experience.frameworks_tools|split:"," %}
+                            <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">{{ tool|trim }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
-                {% endif %}
                 
                 <div class="prose prose-sm max-w-none text-gray-700">
-                    {{ experience.description|markdown_to_html|safe|truncatewords_html:20 }}
+                    {{ experience.business_content|markdown_to_html|safe|truncatewords_html:20 }}
                 </div>
             </div>
             {% endfor %}
@@ -193,18 +326,37 @@
 </div>
 
 <script>
-function editExperience(id, title, startDate, endDate, isCurrent, description, role, teamSize, technologies, processes, achievements) {
+function editExperience(id) {
+    // data属性から値を取得
+    const experienceDiv = document.querySelector(`[data-experience-id="${id}"]`);
+    
     // フォームに値を設定
-    document.querySelector('input[name="title"]').value = title;
-    document.querySelector('input[name="role"]').value = role;
-    document.querySelector('input[name="start_date"]').value = startDate;
-    document.querySelector('input[name="end_date"]').value = endDate || '';
-    document.querySelector('input[name="is_current"]').checked = isCurrent;
-    document.querySelector('input[name="team_size"]').value = teamSize || '';
-    document.querySelector('input[name="technologies"]').value = technologies || '';
-    document.querySelector('input[name="processes"]').value = processes || '';
-    document.querySelector('textarea[name="description"]').value = description || '';
-    document.querySelector('textarea[name="achievements"]').value = achievements || '';
+    document.querySelector('input[name="title"]').value = experienceDiv.dataset.title;
+    document.querySelector('input[name="role"]').value = experienceDiv.dataset.role;
+    document.querySelector('input[name="start_date"]').value = experienceDiv.dataset.startDate;
+    document.querySelector('input[name="end_date"]').value = experienceDiv.dataset.endDate || '';
+    document.querySelector('input[name="is_current"]').checked = experienceDiv.dataset.isCurrent === 'true';
+    document.querySelector('input[name="team_size"]').value = experienceDiv.dataset.teamSize || '';
+    
+    // 使用技術
+    document.querySelector('input[name="programming_languages"]').value = experienceDiv.dataset.programmingLanguages || '';
+    document.querySelector('input[name="databases"]').value = experienceDiv.dataset.databases || '';
+    document.querySelector('input[name="server_os"]').value = experienceDiv.dataset.serverOs || '';
+    document.querySelector('input[name="frameworks_tools"]').value = experienceDiv.dataset.frameworksTools || '';
+    
+    // 担当工程（チェックボックス）
+    document.querySelector('input[name="process_requirement"]').checked = experienceDiv.dataset.processRequirement === 'true';
+    document.querySelector('input[name="process_basic_design"]').checked = experienceDiv.dataset.processBasicDesign === 'true';
+    document.querySelector('input[name="process_detail_design"]').checked = experienceDiv.dataset.processDetailDesign === 'true';
+    document.querySelector('input[name="process_implementation"]').checked = experienceDiv.dataset.processImplementation === 'true';
+    document.querySelector('input[name="process_testing"]').checked = experienceDiv.dataset.processTesting === 'true';
+    document.querySelector('input[name="process_maintenance"]').checked = experienceDiv.dataset.processMaintenance === 'true';
+    
+    // 業務内容・詳細
+    document.querySelector('textarea[name="business_content"]').value = experienceDiv.dataset.businessContent || '';
+    document.querySelector('textarea[name="responsibilities"]').value = experienceDiv.dataset.responsibilities || '';
+    document.querySelector('textarea[name="achievements_learnings"]').value = experienceDiv.dataset.achievementsLearnings || '';
+    
     document.querySelector('input[name="edit_id"]').value = id;
     
     // ボタンのテキストを変更

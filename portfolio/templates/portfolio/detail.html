@@ -1202,7 +1202,6 @@
                                                 {{ experience.end_date|date:"Y年m月" }}
                                             {% endif %}
                                         </p>
-                                        <p class="text-sm font-medium text-blue-600">{{ experience.company }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -1210,7 +1209,6 @@
                             <!-- Experience Details -->
                             <div class="lg:w-2/3">
                                 <h3 class="text-xl font-bold mb-3" style="color: var(--text-primary);">{{ experience.title }}</h3>
-                                <div class="text-body mb-4 prose prose-sm max-w-none">{{ experience.description|markdown_to_html|safe }}</div>
                                 
                                 <!-- Role and Team Size -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -1224,27 +1222,91 @@
                                     </div>
                                 </div>
                                 
-                                <!-- Technologies -->
+                                <!-- Technologies (4 categories) -->
                                 <div class="mb-4">
                                     <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">使用技術:</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        {% for tech in experience.technologies|split:"," %}
-                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">{{ tech|trim }}</span>
-                                        {% endfor %}
+                                    <div class="space-y-2">
+                                        {% if experience.programming_languages %}
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="text-xs font-medium" style="color: var(--text-secondary);">使用言語:</span>
+                                            {% for lang in experience.programming_languages|split:"," %}
+                                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">{{ lang|trim }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        {% if experience.databases %}
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="text-xs font-medium" style="color: var(--text-secondary);">DB:</span>
+                                            {% for db in experience.databases|split:"," %}
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">{{ db|trim }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        {% if experience.server_os %}
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="text-xs font-medium" style="color: var(--text-secondary);">サーバOS:</span>
+                                            {% for os in experience.server_os|split:"," %}
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">{{ os|trim }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        {% if experience.frameworks_tools %}
+                                        <div class="flex flex-wrap gap-2">
+                                            <span class="text-xs font-medium" style="color: var(--text-secondary);">FW・MW:</span>
+                                            {% for tool in experience.frameworks_tools|split:"," %}
+                                            <span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-medium">{{ tool|trim }}</span>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 
                                 <!-- Processes -->
                                 <div class="mb-4">
                                     <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">担当工程:</h4>
-                                    <p class="text-sm" style="color: var(--text-secondary);">{{ experience.processes }}</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        {% if experience.process_requirement %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">要件定義</span>
+                                        {% endif %}
+                                        {% if experience.process_basic_design %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">基本設計</span>
+                                        {% endif %}
+                                        {% if experience.process_detail_design %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">詳細設計</span>
+                                        {% endif %}
+                                        {% if experience.process_implementation %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">実装</span>
+                                        {% endif %}
+                                        {% if experience.process_testing %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">テスト</span>
+                                        {% endif %}
+                                        {% if experience.process_maintenance %}
+                                        <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">保守運用</span>
+                                        {% endif %}
+                                    </div>
                                 </div>
                                 
+                                <!-- Business Content -->
+                                {% if experience.business_content %}
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">業務内容:</h4>
+                                    <div class="text-sm prose prose-sm max-w-none" style="color: var(--text-secondary);">{{ experience.business_content|markdown_to_html|safe }}</div>
+                                </div>
+                                {% endif %}
+                                
+                                <!-- Responsibilities -->
+                                {% if experience.responsibilities %}
+                                <div class="mb-4">
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">担当業務:</h4>
+                                    <div class="text-sm prose prose-sm max-w-none" style="color: var(--text-secondary);">{{ experience.responsibilities|markdown_to_html|safe }}</div>
+                                </div>
+                                {% endif %}
+                                
                                 <!-- Achievements -->
-                                {% if experience.achievements %}
+                                {% if experience.achievements_learnings %}
                                 <div>
-                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">成果・実績:</h4>
-                                    <div class="text-sm prose prose-sm max-w-none" style="color: var(--text-secondary);">{{ experience.achievements|markdown_to_html|safe }}</div>
+                                    <h4 class="text-sm font-semibold mb-2" style="color: var(--text-primary);">成果・学び:</h4>
+                                    <div class="text-sm prose prose-sm max-w-none" style="color: var(--text-secondary);">{{ experience.achievements_learnings|markdown_to_html|safe }}</div>
                                 </div>
                                 {% endif %}
                             </div>
