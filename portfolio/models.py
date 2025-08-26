@@ -64,7 +64,6 @@ class Profile(models.Model):
     title = models.CharField(max_length=200, verbose_name="職種・肩書き")
     specialties = models.TextField(blank=True, verbose_name="得意分野", help_text="例：Webアプリケーション開発, API開発, バッチ処理など")
     skilled_technologies = models.TextField(blank=True, verbose_name="得意技術", help_text="例：Python, Django, API実装など")
-    business_domains = models.TextField(blank=True, verbose_name="得意業務", help_text="例：金融系, EC系, 業務システムなど")
     bio = models.TextField(verbose_name="自己PR")
     email = models.EmailField(verbose_name="メールアドレス")
     location = models.CharField(max_length=100, blank=True, verbose_name="居住地")
@@ -151,10 +150,8 @@ class Experience(models.Model):
     process_testing = models.BooleanField(default=False, verbose_name="テスト")
     process_maintenance = models.BooleanField(default=False, verbose_name="保守運用")
     
-    # 業務内容・詳細（3つのフィールド）
-    business_content = models.TextField(default='', verbose_name="業務内容", help_text="Markdown記法対応")
-    responsibilities = models.TextField(default='', verbose_name="担当業務", help_text="Markdown記法対応")
-    achievements_learnings = models.TextField(blank=True, default='', verbose_name="成果・学び", help_text="Markdown記法対応")
+    # 業務内容
+    business_content = models.TextField(blank=True, default='', verbose_name="業務内容", help_text="Markdown記法対応")
     
     class Meta:
         verbose_name = "経歴"

@@ -327,6 +327,11 @@ def manage_menu(request):
                 experience_instance.save()
                 messages.success(request, '経歴が正常に保存されました。')
                 return redirect('/portfolio/manage/?section=experiences')
+            else:
+                # フォームのエラーをメッセージとして表示
+                for field, errors in experience_form.errors.items():
+                    for error in errors:
+                        messages.error(request, f'{field}: {error}')
         else:
             experience_form = ExperienceForm()
     

@@ -21,7 +21,7 @@ class CustomAuthenticationForm(AuthenticationForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['name', 'age', 'gender', 'title', 'specialties', 'skilled_technologies', 'business_domains', 'bio', 'email', 'location', 'website', 'twitter', 'qiita', 'avatar']
+        fields = ['name', 'age', 'gender', 'title', 'specialties', 'skilled_technologies', 'bio', 'email', 'location', 'website', 'twitter', 'qiita', 'avatar']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
@@ -49,11 +49,6 @@ class ProfileForm(forms.ModelForm):
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
                 'placeholder': 'JavaScript, React, Node.js, Python, Docker, AWS, Git, MySQL',
                 'rows': 3
-            }),
-            'business_domains': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': 'Webサービス, SaaS, EC, 社内システム, スタートアップ',
-                'rows': 2
             }),
             'bio': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
@@ -123,7 +118,7 @@ class ExperienceForm(forms.ModelForm):
             'programming_languages', 'databases', 'server_os', 'frameworks_tools',
             'process_requirement', 'process_basic_design', 'process_detail_design', 
             'process_implementation', 'process_testing', 'process_maintenance',
-            'business_content', 'responsibilities', 'achievements_learnings'
+            'business_content'
         ]
         widgets = {
             'title': forms.TextInput(attrs={
@@ -186,21 +181,11 @@ class ExperienceForm(forms.ModelForm):
             'process_maintenance': forms.CheckboxInput(attrs={
                 'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2'
             }),
-            # 業務内容・詳細
+            # 業務内容
             'business_content': forms.Textarea(attrs={
                 'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '業務内容を記載（Markdown記法対応）',
-                'rows': 4
-            }),
-            'responsibilities': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '担当業務を記載（Markdown記法対応）',
-                'rows': 4
-            }),
-            'achievements_learnings': forms.Textarea(attrs={
-                'class': 'w-full px-4 py-3 bg-gray-800 bg-opacity-50 border border-gray-600 rounded-xl text-white placeholder-gray-400 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300',
-                'placeholder': '成果・学びを記載（Markdown記法対応）',
-                'rows': 3
+                'placeholder': '業務内容・担当業務・成果などを記載（Markdown記法対応）',
+                'rows': 8
             })
         }
 
