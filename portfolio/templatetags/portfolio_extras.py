@@ -1,5 +1,7 @@
 from django import template
 import markdown
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 register = template.Library()
 
@@ -92,3 +94,43 @@ def markdown_to_html(value):
         'markdown.extensions.sane_lists'
     ])
     return md.convert(str(value))
+
+@register.filter
+def duration_format(experience):
+    """Calculate and format the duration between start_date and end_date"""
+    if not experience or not hasattr(experience, 'start_date'):
+        return ''
+    
+    start_date = experience.start_date
+    if not start_date:
+        return ''
+    
+    # 終了日を決定（is_currentがTrueまたはend_dateがNoneの場合は現在日付を使用）
+    if experience.is_current or not experience.end_date:
+        end_date = datetime.now().date()
+    else:
+        end_date = experience.end_date
+    
+    # relativedeltaを使用して正確な年月を計算
+    delta = relativedelta(end_date, start_date)
+    
+    # 月数を計算（15日以上は1ヶ月として繰り上げ）
+    total_months = delta.years * 12 + delta.months
+    if delta.days >= 15:
+        total_months += 1
+    
+    # 月数が0の場合は1ヶ月とする
+    if total_months == 0:
+        return "1ヶ月"
+    
+    # 年と月に分けて表示
+    years = total_months // 12
+    months = total_months % 12
+    
+    parts = []
+    if years > 0:
+        parts.append(f"{years}年")
+    if months > 0:
+        parts.append(f"{months}ヶ月")
+    
+    return "".join(parts)
